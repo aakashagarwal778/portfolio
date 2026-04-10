@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OU Process — Stationarity, Calibration, Vasicek — Aakash Agarwal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')</script>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body>
+<nav class="nav-spoke">
+  <a href="../index.html#research" class="nav-back">← Research</a>
+  <div class="nav-right-spoke">
+    
+    <a href="../index.html" class="nav-brand-spoke">Aakash Agarwal</a>
+  </div>
+</nav>
+
+<div class="spoke-page">
+  <header class="art-hd">
+    <div class="art-eye">Research · Technical Note · Math Finance Series 02</div>
+    <h1 class="art-title">The Ornstein-Uhlenbeck Process — Stationarity, Calibration, and the Vasicek Application</h1>
+    <div class="art-meta">
+      <span>Series: Math Finance 02</span>
+      <span>PDF + Jupyter notebook</span>
+      <span>Repo: stochastic-finance</span>
+      <span>2024</span>
+    </div>
+    <p class="art-lede">GBM has no memory of where it has been. The OU process is defined by having one — a drift that systematically pulls the process back toward an equilibrium. It is the unique continuous-time process that is simultaneously Markov, Gaussian, and stationary, and that triple constraint defines it completely.</p>
+  </header>
+
+  <article class="art-body">
+    <h2>Where GBM fails — and what stationarity means precisely</h2>
+    <p>Under GBM, variance grows as \(\sigma^2 t\) without bound. A GBM model of the short interest rate assigns positive probability to rates of 1000% or −500% at long horizons. The data say otherwise. Any variable with a structural equilibrium — enforced by policy, arbitrage, or physical constraints — requires a model that also has an equilibrium.</p>
+    <p>Stationarity is the precise condition: the process has a well-defined limiting distribution it returns to after any perturbation. For the OU process this is not just a qualitative claim — it is mathematically exact. The stationary distribution is \(\mathcal{N}(\theta, \sigma^2/2\kappa)\), derivable directly from the Fokker-Planck equation by setting \(\partial p/\partial t = 0\).</p>
+
+    <h2>The SDE and its solution</h2>
+    <p>The OU SDE encodes the restoring force directly. When \(X > \theta\) the drift is negative; when \(X < \theta\) it is positive; at \(X = \theta\) there is no drift. The magnitude of the pull is proportional to the deviation — the continuous analogue of a spring restoring force.</p>
+
+    <div class="eq-box">
+      <div class="eq-lbl">Ornstein-Uhlenbeck SDE</div>
+      <div class="eq-content">\[ dX = \kappa(\theta - X)\,dt + \sigma\,dW \]</div>
+    </div>
+
+    <p>The solution method differs from GBM. The OU drift is already linear in \(X\) with constant diffusion — the GBM trick of applying Itô's Lemma to \(\log S\) is not needed. Instead, treat the SDE as a first-order linear ODE and apply an integrating factor \(e^{\kappa t}\). This gives the exact closed-form solution:</p>
+
+    <div class="eq-box">
+      <div class="eq-lbl">Closed-Form Solution</div>
+      <div class="eq-content">\[ X_t = \theta + (X_0 - \theta)e^{-\kappa t} + \sigma\int_0^t e^{-\kappa(t-s)}\,dW_s \]</div>
+    </div>
+
+    <p>Three terms: the long-run equilibrium \(\theta\), the initial deviation decaying exponentially at rate \(\kappa\), and accumulated noise with exponential weighting that discounts older shocks. As \(t \to \infty\), the initial condition is forgotten entirely.</p>
+
+    <h2>The half-life — what κ means in practice</h2>
+    <p>The speed parameter \(\kappa\) is most interpretable through the half-life: the time for the expected deviation from \(\theta\) to halve, \(\tau_{1/2} = \log(2)/\kappa\). For the Brent Crude case (Case 01), the calibrated value \(\kappa = 0.35\) gives a half-life of approximately 2 years — consistent with observed OPEC+ production response cycles. The half-life does not depend on where the process starts or how far it has deviated, making it directly interpretable and directly estimable from data.</p>
+
+    <h2>Application: Vasicek bond pricing</h2>
+    <p>The Vasicek model applies OU to the risk-free short rate \(r_t\) under the risk-neutral measure. Unlike GBM where the traded asset and the state variable are the same, the short rate is an unobservable factor — what is traded is the bond, whose price is determined by the path of \(r_t\). This is the price-process versus factor-process distinction fundamental to fixed income and volatility modelling.</p>
+
+    <div class="eq-box">
+      <div class="eq-lbl">Vasicek Bond Price — Affine Form</div>
+      <div class="eq-content">\[ P(t,T) = A(t,T)\,e^{-B(t,T)\,r_t}, \quad B(t,T) = \frac{1 - e^{-\kappa\tau}}{\kappa}, \quad \tau = T-t \]</div>
+    </div>
+
+    <p>This is derived via the expectation route — the Gaussian structure of OU makes \(\int_t^T r_s\,ds\) tractable as a normal random variable, and the bond price follows from the moment generating function. The PDE route — Itô's Lemma on \(P(r,t)\), delta-hedging, no-arbitrage — gives exactly the same formula via a different path. Two routes, one answer.</p>
+
+    <div class="callout">
+      <p><strong>The OU process is the foundation of Case 01.</strong> The Geoeconomic SDE uses OU drift \(\kappa(\theta - X)\) as its restoring force component. The difference is that Case 01 adds state-dependent diffusion \(\sigma_0(1 + \alpha|X - \theta|)\) and a Poisson jump term — both of which break the analytical tractability that makes pure OU solvable in closed form.</p>
+    </div>
+
+    <hr class="art-hr">
+    <div class="exit-links">
+      <a href="../docs/ou-framework.pdf" target="_blank" class="exit-btn fill">Read full derivation (PDF) ↗</a>
+      <a href="https://github.com/aakashagarwal778/stochastic-finance/tree/main/02_ou" target="_blank" class="exit-btn out">View Jupyter notebook ↗</a>
+      <a href="../models/ou-explorer.html" class="exit-btn out">Open OU Explorer →</a>
+    </div>
+  </article>
+
+  <div class="related">
+    <div class="rel-lbl">Linked</div>
+    <div class="rel-links">
+      <a href="../publications/ou-framework.html" class="rel-link">Publication ↗</a>
+      <a href="../models/ou-explorer.html" class="rel-link">OU Explorer →</a>
+      <a href="gbm-foundation.html" class="rel-link">GBM Foundation →</a>
+      <a href="geoeconomic-sde.html" class="rel-link">Geoeconomic SDE →</a>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <div class="fi">
+      <div class="fn">Aakash Agarwal<span>Quantitative Finance · 2025</span></div>
+      <div class="fl"><a href="https://github.com/aakashagarwal778" target="_blank">GitHub</a><a href="https://www.linkedin.com/in/aakash11agarwal/" target="_blank">LinkedIn</a></div>
+    </div>
+  </footer>
+</div>
+
+<button class="btn-float" id="theme-float" onclick="toggleTheme()"></button>
+<script>function toggleTheme(){const h=document.documentElement;const l=h.getAttribute('data-theme')==='light';l?h.removeAttribute('data-theme'):h.setAttribute('data-theme','light');localStorage.setItem('theme',l?'dark':'light');updateThemeBtn();}
+function updateThemeBtn(){const btn=document.getElementById('theme-float');if(!btn)return;const isLight=document.documentElement.getAttribute('data-theme')==='light';btn.textContent=isLight?'◑ Dark':'☀ Light';}
+window.addEventListener('DOMContentLoaded',updateThemeBtn);</script>
+</body>
+</html>

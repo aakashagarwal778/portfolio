@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OU Mean-Reversion Explorer — Aakash Agarwal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')</script>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.proj-page{max-width:1080px;margin:0 auto;padding:0 44px}
+.proj-hd{padding:48px 0 32px;border-bottom:1px solid var(--rule)}
+.proj-eye{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.proj-title{font-family:var(--serif);font-size:clamp(24px,3vw,34px);font-weight:500;color:var(--bright);letter-spacing:-.01em;margin-bottom:10px;line-height:1.15}
+.proj-desc{font-size:14px;color:var(--dim);line-height:1.8;max-width:680px;font-weight:300}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule2);border:1px solid var(--rule2);margin:24px 0}
+.stat{background:var(--bg2);padding:16px 18px}.stat-lbl{font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}.stat-val{font-family:var(--serif);font-size:24px;font-weight:500;color:var(--bright);line-height:1}.stat-sub{font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:2px}
+.sim-wrap{display:grid;grid-template-columns:1fr 240px;gap:0;border:1px solid var(--rule2);margin-bottom:24px;overflow:hidden}
+.sim-area{background:var(--bg2);position:relative}
+#sim-canvas{display:block;width:100%;height:380px}
+.sim-lbl{position:absolute;top:12px;left:14px;font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.controls{padding:22px 18px;display:flex;flex-direction:column;gap:18px;background:var(--bg3);border-left:1px solid var(--rule2)}
+.ctrl-lbl{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;justify-content:space-between}.ctrl-val{color:var(--accent)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--rule2);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:13px;height:13px;background:var(--accent);cursor:pointer;border-radius:0;border:2px solid var(--bg3)}
+input[type=range]::-moz-range-thumb{width:13px;height:13px;background:var(--accent);cursor:pointer;border-radius:0;border:2px solid var(--bg3)}
+.run-btn{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:10px 0;background:var(--accent);color:var(--bg);border:none;cursor:pointer;width:100%;transition:opacity .15s;margin-top:4px}.run-btn:hover{opacity:.85}
+.theory-link{padding:18px 22px;background:var(--bg2);border:1px solid var(--rule2);display:flex;align-items:center;justify-content:space-between;text-decoration:none;transition:all .2s;margin-bottom:44px}.theory-link:hover{background:var(--bg3);border-color:var(--accent-bd)}
+.tl-lbl{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}.tl-title{font-family:var(--serif);font-size:16px;font-weight:500;color:var(--bright)}.tl-arr{font-family:var(--mono);font-size:10px;color:var(--muted);flex-shrink:0;margin-left:20px;transition:color .2s}.theory-link:hover .tl-arr{color:var(--accent)}
+@media(max-width:700px){.sim-wrap{grid-template-columns:1fr}.controls{border-left:none;border-top:1px solid var(--rule2)}.stats-grid{grid-template-columns:1fr 1fr}.proj-page{padding:0 24px}}
+</style>
+</head>
+<body>
+<nav class="nav-spoke">
+  <a href="../index.html#models" class="nav-back">← Interactive Models</a>
+  <div class="nav-right-spoke">
+    
+    <a href="../index.html" class="nav-brand-spoke">Aakash Agarwal</a>
+  </div>
+</nav>
+<div class="proj-page">
+  <header class="proj-hd">
+    <div class="proj-eye">Interactive Model · OU Explorer</div>
+    <h1 class="proj-title">OU Mean-Reversion Explorer</h1>
+    <p class="proj-desc">Ornstein-Uhlenbeck dynamics rendered live. The shaded band shows the stationary ±σ/√2κ corridor — the range the process settles into at long horizons. Adjust κ, θ, σ and watch the half-life and corridor update in real time.</p>
+  </header>
+  <div class="stats-grid">
+    <div class="stat"><div class="stat-lbl">Long-run mean θ</div><div class="stat-val" id="st-theta">—</div><div class="stat-sub">reversion target</div></div>
+    <div class="stat"><div class="stat-lbl">Half-life</div><div class="stat-val" id="st-hl">—</div><div class="stat-sub">ln(2)/κ years</div></div>
+    <div class="stat"><div class="stat-lbl">Stationary std</div><div class="stat-val" id="st-std">—</div><div class="stat-sub">σ/√(2κ)</div></div>
+    <div class="stat"><div class="stat-lbl">Final value</div><div class="stat-val" id="st-fin">—</div><div class="stat-sub">X_T</div></div>
+  </div>
+  <div class="sim-wrap">
+    <div class="sim-area">
+      <div class="sim-lbl">OU · Euler-Maruyama</div>
+      <canvas id="sim-canvas"></canvas>
+    </div>
+    <div class="controls">
+      <div><div class="ctrl-lbl">Initial value X₀ <span class="ctrl-val" id="v-x0">120</span></div><input type="range" id="r-x0" min="10" max="200" value="120" step="1"></div>
+      <div><div class="ctrl-lbl">Reversion speed κ <span class="ctrl-val" id="v-k">1.0</span></div><input type="range" id="r-k" min="0.1" max="6" value="1.0" step="0.1"></div>
+      <div><div class="ctrl-lbl">Long-run mean θ <span class="ctrl-val" id="v-th">80</span></div><input type="range" id="r-th" min="20" max="180" value="80" step="1"></div>
+      <div><div class="ctrl-lbl">Volatility σ <span class="ctrl-val" id="v-sig">15</span></div><input type="range" id="r-sig" min="1" max="50" value="15" step="1"></div>
+      <div><div class="ctrl-lbl">Horizon T (years) <span class="ctrl-val" id="v-t">3.0</span></div><input type="range" id="r-t" min="0.5" max="10" value="3.0" step="0.5"></div>
+      <button class="run-btn" onclick="runSim()">▶ Run simulation</button>
+    </div>
+  </div>
+  <a href="../research/ou-foundation.html" class="theory-link">
+    <div><div class="tl-lbl">Read the theory behind this model</div><div class="tl-title">The OU Process — Stationarity, Calibration, and the Vasicek Application</div></div>
+    <span class="tl-arr">Read article →</span>
+  </a>
+  <div class="related"><div class="rel-lbl">See also</div><div class="rel-links"><a href="../publications/ou-framework.html" class="rel-link">OU Publication ↗</a><a href="jump-diffusion.html" class="rel-link">Jump-Diffusion →</a><a href="../research/ou-foundation.html" class="rel-link">Research article →</a></div></div>
+  <footer class="foot"><div class="fi"><div class="fn">Aakash Agarwal<span>Quantitative Finance · 2025</span></div><div class="fl"><a href="https://github.com/aakashagarwal778" target="_blank">GitHub</a><a href="https://www.linkedin.com/in/aakash11agarwal/" target="_blank">LinkedIn</a></div></div></footer>
+</div>
+<button class="btn-float" id="theme-float" onclick="toggleTheme()"></button>
+<script>
+function toggleTheme(){const h=document.documentElement;const l=h.getAttribute('data-theme')==='light';l?h.removeAttribute('data-theme'):h.setAttribute('data-theme','light');localStorage.setItem('theme',l?'dark':'light');updateThemeBtn();runSim()}
+function updateThemeBtn(){const btn=document.getElementById('theme-float');if(!btn)return;const isLight=document.documentElement.getAttribute('data-theme')==='light';btn.textContent=isLight?'◑ Dark':'☀ Light';}
+window.addEventListener('DOMContentLoaded',updateThemeBtn);
+const sl={x0:{el:document.getElementById('r-x0'),out:document.getElementById('v-x0'),fmt:v=>v},k:{el:document.getElementById('r-k'),out:document.getElementById('v-k'),fmt:v=>parseFloat(v).toFixed(1)},th:{el:document.getElementById('r-th'),out:document.getElementById('v-th'),fmt:v=>v},sig:{el:document.getElementById('r-sig'),out:document.getElementById('v-sig'),fmt:v=>v},t:{el:document.getElementById('r-t'),out:document.getElementById('v-t'),fmt:v=>parseFloat(v).toFixed(1)}};
+Object.values(sl).forEach(s=>s.el.addEventListener('input',()=>{s.out.textContent=s.fmt(s.el.value);runSim()}));
+function getP(){return{X0:parseFloat(sl.x0.el.value),kappa:parseFloat(sl.k.el.value),theta:parseFloat(sl.th.el.value),sigma:parseFloat(sl.sig.el.value),T:parseFloat(sl.t.el.value)}}
+function bm(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+function ouPath(X0,kappa,theta,sigma,T,steps){const dt=T/steps;const p=[X0];for(let i=0;i<steps;i++){const l=p[p.length-1];p.push(l+kappa*(theta-l)*dt+sigma*Math.sqrt(dt)*bm())}return p}
+let lastPath=[];let lastP={};
+function runSim(){
+  const p=getP();lastP=p;const steps=220;
+  lastPath=ouPath(p.X0,p.kappa,p.theta,p.sigma,p.T,steps);
+  draw(lastPath,p);
+  document.getElementById('st-theta').textContent=p.theta.toFixed(0);
+  document.getElementById('st-hl').textContent=(Math.log(2)/p.kappa).toFixed(2);
+  document.getElementById('st-std').textContent=(p.sigma/Math.sqrt(2*p.kappa)).toFixed(2);
+  document.getElementById('st-fin').textContent=lastPath[lastPath.length-1].toFixed(1);
+}
+function draw(path,p){
+  const c=document.getElementById('sim-canvas');const W=c.offsetWidth,H=c.offsetHeight||380;c.width=W;c.height=H;
+  const ctx=c.getContext('2d');const isLight=document.documentElement.getAttribute('data-theme')==='light';
+  ctx.fillStyle=isLight?'#F2F0EB':'#0F0F0F';ctx.fillRect(0,0,W,H);
+  const gc=isLight?'rgba(0,0,0,0.06)':'rgba(255,255,255,0.04)';
+  ctx.strokeStyle=gc;ctx.lineWidth=0.7;
+  for(let i=1;i<5;i++){ctx.beginPath();ctx.moveTo(0,H*i/5);ctx.lineTo(W,H*i/5);ctx.stroke()}
+  let mn=Math.min(...path),mx=Math.max(...path);
+  const bandH=p.sigma/Math.sqrt(2*p.kappa);
+  mn=Math.min(mn,p.theta-bandH*2.5);mx=Math.max(mx,p.theta+bandH*2.5);
+  const pad=(mx-mn)*0.1;const lo=mn-pad,hi=mx+pad;
+  const toY=v=>H-(v-lo)/(hi-lo)*H*0.88-H*0.06;
+  const steps=path.length-1;const toX=i=>i/steps*W;
+  const bandPx=bandH/(hi-lo)*H*0.88;
+  const thetaPx=toY(p.theta);
+  ctx.fillStyle='rgba(184,122,91,0.06)';ctx.fillRect(0,thetaPx-bandPx,W,bandPx*2);
+  ctx.setLineDash([3,5]);ctx.strokeStyle='rgba(184,122,91,0.22)';ctx.lineWidth=0.8;
+  ctx.beginPath();ctx.moveTo(0,thetaPx-bandPx);ctx.lineTo(W,thetaPx-bandPx);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(0,thetaPx+bandPx);ctx.lineTo(W,thetaPx+bandPx);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='rgba(184,122,91,0.4)';ctx.font='7.5px Geist Mono,monospace';
+  ctx.fillText('+σ/√2κ',4,thetaPx-bandPx-3);ctx.fillText('−σ/√2κ',4,thetaPx+bandPx+10);
+  ctx.setLineDash([5,4]);ctx.strokeStyle=isLight?'rgba(17,64,38,0.4)':'rgba(45,212,191,0.35)';ctx.lineWidth=0.9;
+  ctx.beginPath();ctx.moveTo(0,thetaPx);ctx.lineTo(W,thetaPx);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=isLight?'rgba(17,64,38,0.6)':'rgba(45,212,191,0.6)';ctx.font='9px Geist Mono,monospace';
+  ctx.fillText('θ',4,thetaPx-5);
+  const ac=isLight?'rgba(15,41,66,0.9)':'rgba(184,122,91,0.9)';
+  ctx.beginPath();ctx.moveTo(toX(0),toY(path[0]));
+  for(let i=1;i<path.length;i++)ctx.lineTo(toX(i),toY(path[i]));
+  ctx.strokeStyle=ac;ctx.lineWidth=1.8;ctx.lineJoin='round';ctx.stroke();
+  ctx.fillStyle=isLight?'rgba(17,64,38,0.5)':'rgba(45,212,191,0.5)';
+  for(let i=1;i<path.length;i++){if((path[i-1]-p.theta)*(path[i]-p.theta)<0){ctx.beginPath();ctx.arc(toX(i),thetaPx,3,0,Math.PI*2);ctx.fill();}}
+}
+window.addEventListener('load',runSim);
+window.addEventListener('resize',()=>{if(lastPath.length)draw(lastPath,lastP)},{passive:true});
+</script>
+</body>
+</html>

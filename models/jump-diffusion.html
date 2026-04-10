@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brent Crude Jump-Diffusion — Aakash Agarwal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')</script>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.proj-page{max-width:1080px;margin:0 auto;padding:0 44px}
+.proj-hd{padding:48px 0 32px;border-bottom:1px solid var(--rule)}
+.proj-eye{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.proj-title{font-family:var(--serif);font-size:clamp(24px,3vw,34px);font-weight:500;color:var(--bright);letter-spacing:-.01em;margin-bottom:10px;line-height:1.15}
+.proj-desc{font-size:14px;color:var(--dim);line-height:1.8;max-width:680px;font-weight:300}
+.params-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--rule2);border:1px solid var(--rule2);margin:24px 0}
+.param{background:var(--bg2);padding:14px 16px}
+.param-lbl{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.param-val{font-family:var(--serif);font-size:20px;color:var(--accent);font-weight:500}
+.param-sym{font-family:var(--mono);font-size:8.5px;color:var(--muted);margin-top:2px}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule2);border:1px solid var(--rule2);margin-bottom:24px}
+.stat{background:var(--bg2);padding:16px 18px}.stat-lbl{font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}.stat-val{font-family:var(--serif);font-size:24px;font-weight:500;color:var(--bright);line-height:1}.stat-sub{font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:2px}
+.sim-wrap{display:grid;grid-template-columns:1fr 240px;gap:0;border:1px solid var(--rule2);margin-bottom:24px;overflow:hidden}
+.sim-area{background:var(--bg2);position:relative}
+#sim-canvas{display:block;width:100%;height:380px}
+.sim-lbl{position:absolute;top:12px;left:14px;font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.controls{padding:22px 18px;display:flex;flex-direction:column;gap:18px;background:var(--bg3);border-left:1px solid var(--rule2)}
+.ctrl-lbl{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;justify-content:space-between}.ctrl-val{color:var(--accent)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--rule2);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:13px;height:13px;background:var(--accent);cursor:pointer;border-radius:0;border:2px solid var(--bg3)}
+input[type=range]::-moz-range-thumb{width:13px;height:13px;background:var(--accent);cursor:pointer;border-radius:0;border:2px solid var(--bg3)}
+.run-btn{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:10px 0;background:var(--accent);color:var(--bg);border:none;cursor:pointer;width:100%;transition:opacity .15s;margin-top:4px}.run-btn:hover{opacity:.85}
+.theory-link{padding:18px 22px;background:var(--bg2);border:1px solid var(--rule2);display:flex;align-items:center;justify-content:space-between;text-decoration:none;transition:all .2s;margin-bottom:44px}.theory-link:hover{background:var(--bg3);border-color:var(--accent-bd)}
+.tl-lbl{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}.tl-title{font-family:var(--serif);font-size:16px;font-weight:500;color:var(--bright)}.tl-arr{font-family:var(--mono);font-size:10px;color:var(--muted);flex-shrink:0;margin-left:20px;transition:color .2s}.theory-link:hover .tl-arr{color:var(--accent)}
+@media(max-width:700px){.sim-wrap{grid-template-columns:1fr}.controls{border-left:none;border-top:1px solid var(--rule2)}.params-grid,.stats-grid{grid-template-columns:1fr 1fr}.proj-page{padding:0 24px}}
+</style>
+</head>
+<body>
+<nav class="nav-spoke">
+  <a href="../index.html#models" class="nav-back">← Interactive Models</a>
+  <div class="nav-right-spoke">
+    
+    <a href="../index.html" class="nav-brand-spoke">Aakash Agarwal</a>
+  </div>
+</nav>
+<div class="proj-page">
+  <header class="proj-hd">
+    <div class="proj-eye">Interactive Model · Jump-Diffusion · Geoeconomic SDE · Case 01</div>
+    <h1 class="proj-title">Brent Crude Jump-Diffusion Simulator</h1>
+    <p class="proj-desc">The calibrated Case 01 model running live. Parameters fitted via MLE on 4,648 daily observations of BZ=F (2000–2026). The return distribution builds in real time — watch the fat tails form as jump events occur. Adjust the horizon and paths to explore the probability landscape.</p>
+  </header>
+
+  <div class="params-grid">
+    <div class="param"><div class="param-lbl">Mean-reversion speed</div><div class="param-val">0.35</div><div class="param-sym">κ (yr⁻¹) · half-life ≈ 2 yr</div></div>
+    <div class="param"><div class="param-lbl">Equilibrium price</div><div class="param-val">$87.11</div><div class="param-sym">θ = exp(log 87.11)</div></div>
+    <div class="param"><div class="param-lbl">Base volatility</div><div class="param-val">0.258</div><div class="param-sym">σ₀ annual</div></div>
+    <div class="param"><div class="param-lbl">Jump intensity</div><div class="param-val">4.12</div><div class="param-sym">λ (yr⁻¹) · ~4 events/yr</div></div>
+    <div class="param"><div class="param-lbl">Vol nonlinearity</div><div class="param-val">1.39</div><div class="param-sym">α · state-dependent</div></div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat"><div class="stat-lbl">P(above floor $70)</div><div class="stat-val" id="st-floor">—</div><div class="stat-sub">at horizon T</div></div>
+    <div class="stat"><div class="stat-lbl">Mean final price</div><div class="stat-val" id="st-mean">—</div><div class="stat-sub">E[X_T] USD/bbl</div></div>
+    <div class="stat"><div class="stat-lbl">Total jumps</div><div class="stat-val" id="st-jumps">—</div><div class="stat-sub">across all paths</div></div>
+  </div>
+
+  <div class="sim-wrap">
+    <div class="sim-area">
+      <div class="sim-lbl">Return distribution · OU+Jump · Euler-Maruyama</div>
+      <canvas id="sim-canvas"></canvas>
+    </div>
+    <div class="controls">
+      <div><div class="ctrl-lbl">Initial price X₀ <span class="ctrl-val" id="v-x0">$82</span></div><input type="range" id="r-x0" min="40" max="130" value="82" step="1"></div>
+      <div><div class="ctrl-lbl">Horizon T (years) <span class="ctrl-val" id="v-t">0.5</span></div><input type="range" id="r-t" min="0.08" max="2" value="0.5" step="0.08"></div>
+      <div><div class="ctrl-lbl">Paths N <span class="ctrl-val" id="v-n">2000</span></div><input type="range" id="r-n" min="500" max="8000" value="2000" step="500"></div>
+      <div><div class="ctrl-lbl">Jump size σⱼ <span class="ctrl-val" id="v-js">0.105</span></div><input type="range" id="r-js" min="0.02" max="0.3" value="0.105" step="0.005"></div>
+      <button class="run-btn" onclick="runSim()">▶ Run simulation</button>
+    </div>
+  </div>
+
+  <a href="../research/geoeconomic-sde.html" class="theory-link">
+    <div><div class="tl-lbl">Read the derivation behind this model</div><div class="tl-title">Geoeconomic Risk as a Stochastic Process — the OPEC+ Case</div></div>
+    <span class="tl-arr">Read article →</span>
+  </a>
+
+  <div class="related"><div class="rel-lbl">See also</div><div class="rel-links"><a href="../publications/case01-brent.html" class="rel-link">Publication ↗</a><a href="ou-explorer.html" class="rel-link">OU Explorer →</a><a href="../research/geoeconomic-sde.html" class="rel-link">Research article →</a></div></div>
+  <footer class="foot"><div class="fi"><div class="fn">Aakash Agarwal<span>Quantitative Finance · 2025</span></div><div class="fl"><a href="https://github.com/aakashagarwal778" target="_blank">GitHub</a><a href="https://www.linkedin.com/in/aakash11agarwal/" target="_blank">LinkedIn</a></div></div></footer>
+</div>
+
+<button class="btn-float" id="theme-float" onclick="toggleTheme()"></button>
+<script>
+function toggleTheme(){const h=document.documentElement;const l=h.getAttribute('data-theme')==='light';l?h.removeAttribute('data-theme'):h.setAttribute('data-theme','light');localStorage.setItem('theme',l?'dark':'light');updateThemeBtn();}
+function updateThemeBtn(){const btn=document.getElementById('theme-float');if(!btn)return;const isLight=document.documentElement.getAttribute('data-theme')==='light';btn.textContent=isLight?'◑ Dark':'☀ Light';}
+window.addEventListener('DOMContentLoaded',updateThemeBtn);
+const sl={x0:{el:document.getElementById('r-x0'),out:document.getElementById('v-x0'),fmt:v=>'$'+v},t:{el:document.getElementById('r-t'),out:document.getElementById('v-t'),fmt:v=>parseFloat(v).toFixed(2)},n:{el:document.getElementById('r-n'),out:document.getElementById('v-n'),fmt:v=>v},js:{el:document.getElementById('r-js'),out:document.getElementById('v-js'),fmt:v=>parseFloat(v).toFixed(3)}};
+Object.values(sl).forEach(s=>s.el.addEventListener('input',()=>{s.out.textContent=s.fmt(s.el.value)}));
+function getP(){return{X0:parseFloat(sl.x0.el.value),T:parseFloat(sl.t.el.value),N:parseInt(sl.n.el.value),jumpSig:parseFloat(sl.js.el.value)}}
+const kappa=0.35,theta=Math.log(87.11),sigma0=0.258,alpha=1.39,lambda=4.12;
+function bm(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+function runSim(){
+  const p=getP();const steps=Math.round(p.T*252);const dt=p.T/steps;
+  const BINS=40;const binMin=-0.35,binMax=0.35;
+  const counts=new Array(BINS).fill(0);let total=0,jumps=0,sumFinal=0,aboveFloor=0;
+  const floorLog=Math.log(70);
+  function binIdx(r){return Math.max(0,Math.min(BINS-1,Math.floor((r-binMin)/(binMax-binMin)*BINS)))}
+  for(let i=0;i<p.N;i++){
+    let x=Math.log(p.X0);
+    for(let j=0;j<steps;j++){
+      const jumped=Math.random()<lambda*dt;
+      const jv=jumped?bm()*p.jumpSig:0;
+      x=x+kappa*(theta-x)*dt+sigma0*(1+alpha*Math.abs(x-theta))*Math.sqrt(dt)*bm()+jv;
+      if(jumped)jumps++;
+    }
+    const ret=x-Math.log(p.X0);counts[binIdx(ret)]++;total++;
+    sumFinal+=Math.exp(x);if(x>floorLog)aboveFloor++;
+  }
+  const maxCount=Math.max(...counts);
+  document.getElementById('st-floor').textContent=((aboveFloor/total)*100).toFixed(1)+'%';
+  document.getElementById('st-mean').textContent='$'+(sumFinal/total).toFixed(1);
+  document.getElementById('st-jumps').textContent=jumps;
+  draw(counts,maxCount,BINS,binMin,binMax,p);
+}
+function draw(counts,maxCount,BINS,binMin,binMax,p){
+  const c=document.getElementById('sim-canvas');const W=c.offsetWidth,H=c.offsetHeight||380;c.width=W;c.height=H;
+  const ctx=c.getContext('2d');const isLight=document.documentElement.getAttribute('data-theme')==='light';
+  ctx.fillStyle=isLight?'#F2F0EB':'#0F0F0F';ctx.fillRect(0,0,W,H);
+  const pad=14,chartH=H-pad*2,bw=(W-pad*2)/BINS;
+  const barScale=chartH*0.9;
+  /* bars drawn first */
+  for(let i=0;i<BINS;i++){
+    const bh=counts[i]/maxCount*barScale;
+    const x=pad+i*bw,y=pad+chartH-bh;
+    const isTail=(i<BINS*0.18||i>BINS*0.82);
+    ctx.fillStyle=isLight
+      ?(isTail?'rgba(139,32,32,0.55)':'rgba(122,75,14,0.5)')
+      :(isTail?'rgba(210,90,90,0.65)':'rgba(184,122,91,0.55)');
+    ctx.fillRect(x,y,bw-1,bh);
+  }
+  /* normal reference curve — scaled so its peak equals barScale (same as tallest bar) */
+  const normPeak=1/(sigma0*2.5066);
+  ctx.beginPath();
+  for(let px=0;px<=W-pad*2;px++){
+    const r=binMin+(px/(W-pad*2))*(binMax-binMin);
+    const nd=Math.exp(-r*r/(2*sigma0*sigma0))/(sigma0*2.5066);
+    const py=pad+chartH-(nd/normPeak)*barScale;
+    px===0?ctx.moveTo(px+pad,py):ctx.lineTo(px+pad,py);
+  }
+  const normalCol=isLight?'rgba(0,0,0,0.28)':'rgba(255,255,255,0.25)';
+  ctx.strokeStyle=normalCol;ctx.lineWidth=1.4;ctx.setLineDash([4,3]);ctx.stroke();ctx.setLineDash([]);
+  /* zero line */
+  const zeroX=pad+(-binMin/(binMax-binMin))*(W-pad*2);
+  ctx.setLineDash([2,3]);ctx.strokeStyle=isLight?'rgba(0,0,0,0.14)':'rgba(255,255,255,0.12)';ctx.lineWidth=0.7;
+  ctx.beginPath();ctx.moveTo(zeroX,pad);ctx.lineTo(zeroX,H-pad);ctx.stroke();ctx.setLineDash([]);
+  /* labels */
+  const labelCol=isLight?'rgba(139,32,32,0.7)':'rgba(210,120,120,0.85)';
+  ctx.fillStyle=labelCol;ctx.font='9px Geist Mono,monospace';
+  ctx.fillText('fat tail',pad,H-pad-4);ctx.fillText('fat tail',W-58,H-pad-4);
+  ctx.fillStyle=normalCol;ctx.font='8px Geist Mono,monospace';
+  ctx.fillText('── normal (GBM)',pad,pad+12);
+  ctx.fillStyle=isLight?'rgba(0,0,0,0.28)':'rgba(255,255,255,0.22)';
+  ctx.fillText('Return →',W-58,H-4);ctx.fillText('n='+p.N,W-58,pad+12);
+}
+window.addEventListener('load',runSim);
+</script>
+</body>
+</html>

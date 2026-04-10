@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geoeconomic Risk as a Stochastic Process — Aakash Agarwal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')</script>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body>
+<nav class="nav-spoke">
+  <a href="../index.html#research" class="nav-back">← Research</a>
+  <div class="nav-right-spoke">
+    
+    <a href="../index.html" class="nav-brand-spoke">Aakash Agarwal</a>
+  </div>
+</nav>
+
+<div class="spoke-page">
+  <header class="art-hd">
+    <div class="art-eye">Research · Geoeconomic SDE Framework · Case 01</div>
+    <h1 class="art-title">Geoeconomic Risk as a Stochastic Process — the OPEC+ Case</h1>
+    <div class="art-meta">
+      <span>Status: complete</span>
+      <span>Data: BZ=F · 4,648 daily obs · 2000–2026</span>
+      <span>Language: Python 3.10</span>
+      <span>April 2025</span>
+    </div>
+    <p class="art-lede">When a cartel enforces price boundaries, Brownian motion has nothing to say about it. Standard GBM treats all price levels identically and all shocks as continuous. Neither is true for OPEC+-controlled commodity markets. This piece builds a mean-reverting jump-diffusion SDE from the economics up — and calibrates it on real data.</p>
+  </header>
+
+  <article class="art-body">
+    <h2>Why standard GBM fails here</h2>
+    <p>Geometric Brownian Motion assumes constant drift and constant volatility, with no memory of where prices "should" be. For equity prices over long horizons, this is defensible — there is no structural reason for a stock to revert to a fixed level. For Brent crude under active OPEC+ management, it is wrong in two specific ways.</p>
+    <p>First, there is a systematic <strong>restoring force</strong>. OPEC+ member fiscal breakevens cluster near $70–$75. Below that range, members run budget deficits and have a strong collective incentive to cut production — continuously, and proportionally to how far below the floor prices are. Above $85–$90, US shale operators can profitably hedge forward production and rig counts rise within 3–6 months. The result is not a hard wall — it is a restoring force that grows stronger the further prices deviate from the band. This is precisely the structure of an Ornstein-Uhlenbeck drift.</p>
+    <p>Second, there are <strong>discrete geopolitical shocks</strong>: surprise OPEC+ production decisions, tanker route disruptions, sudden demand revisions. These arrive discontinuously and produce instantaneous price jumps that a continuous diffusion process cannot replicate. An explicit Poisson jump component is required.</p>
+
+    <h2>Building the SDE term by term</h2>
+    <p>The state variable is \(X(t) = \log(\text{Brent spot})\), working in log-price to ensure positivity and to make percentage moves the unit of analysis.</p>
+    <p><strong>Drift.</strong> The restoring force argument translates directly to OU drift: \(\kappa(\theta - X)\,dt\). When \(X > \theta\) the force is negative; when \(X < \theta\) positive. The speed \(\kappa\) and the equilibrium level \(\theta\) are calibrated from data.</p>
+    <p><strong>Diffusion.</strong> Market uncertainty is not uniform across the price band. Near $70 and $90, implied volatility is elevated — OPEC meetings and shale hedging reports are watched closely. In the middle of the band, markets are calm. This is encoded as \(\sigma_0(1 + \alpha|X - \theta|)\,dW\): baseline vol scaled by distance from the mean. The key consequence is that this nonlinearity breaks Fokker-Planck analytical tractability — the diffusion coefficient has a discontinuous derivative at \(X = \theta\) — which forces numerical treatment.</p>
+    <p><strong>Jumps.</strong> Geopolitical shocks arrive as a Poisson process with intensity \(\lambda\). Each shock moves log-price by \(J \sim \mathcal{N}(\mu_j, \sigma_j^2)\).</p>
+
+    <div class="eq-box">
+      <div class="eq-lbl">Core SDE — Assembled</div>
+      <div class="eq-content">\[ dX = \underbrace{\kappa(\theta - X)\,dt}_{\text{OPEC+ restoring force}} + \underbrace{\sigma_0(1 + \alpha|X - \theta|)\,dW}_{\text{state-dependent diffusion}} + \underbrace{J\,dq}_{\text{geopolitical jump}} \]</div>
+    </div>
+
+    <h2>Analytical tractability — why numerical methods are necessary</h2>
+    <p>Before building the numerical solver, the correct step is to attempt the analytical path and identify exactly where it fails. The diffusion coefficient \(\sigma(X) = \sigma_0(1 + \alpha|X - \theta|)\) is nonlinear in \(X\), with a discontinuous derivative at \(X = \theta\). The Fokker-Planck PDE for the transition density has a non-smooth diffusion term and admits no closed-form solution. The Euler-Maruyama discretisation is therefore not a shortcut — it is the only viable route.</p>
+
+    <div class="callout">
+      <p><strong>Analytical tractability is a formal step in the methodology, not an afterthought.</strong> Classical OU with constant \(\sigma\) has a closed-form solution and a numerical solver is never needed. The moment \(\sigma\) becomes a function of \(X\), the Gaussian structure breaks. This case is deliberately constructed around that boundary — understanding exactly why the solver exists is what makes it transferable to more complex cases.</p>
+    </div>
+
+    <h2>Calibrated parameters (MLE on 4,648 observations)</h2>
+    <div class="ptab-wrap">
+      <table class="ptab">
+        <thead><tr><th>Parameter</th><th>Symbol</th><th>Value</th><th>Interpretation</th></tr></thead>
+        <tbody>
+          <tr><td>Mean-reversion speed</td><td>\(\kappa\)</td><td>0.35 yr⁻¹</td><td>Half-life ≈ 2 years. Reversion is slow — price can stay away from mean for extended periods.</td></tr>
+          <tr><td>Equilibrium log-price</td><td>\(\theta\)</td><td>log(87.11)</td><td>Historical equilibrium at $87.11 — 2011–2014 supercycle pulls mean above current OPEC floor.</td></tr>
+          <tr><td>Base volatility</td><td>\(\sigma_0\)</td><td>0.258</td><td>25.8% baseline annualised vol. Reflects 2008, 2014–16, and 2020 in the sample.</td></tr>
+          <tr><td>Vol nonlinearity</td><td>\(\alpha\)</td><td>1.39</td><td>Strong state-dependent scaling — uncertainty rises sharply near band boundaries.</td></tr>
+          <tr><td>Jump intensity</td><td>\(\lambda\)</td><td>4.12 yr⁻¹</td><td>~4 geopolitical shock events per year historically.</td></tr>
+          <tr><td>Mean jump size</td><td>\(\mu_j\)</td><td>−0.013</td><td>Marginal negative bias — shocks pushed price down slightly more than up.</td></tr>
+          <tr><td>Jump size std</td><td>\(\sigma_j\)</td><td>0.105</td><td>Jump sizes ≈ 10% log-price move per event.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Key result</h2>
+    <p>Running 10,000 Monte Carlo paths from \(X_0 = \log(82)\), horizon \(T = 0.5\) years:</p>
+    <p>The <strong>directional asymmetry</strong> is the primary departure from Black-Scholes. Starting below \(\theta = \$87.11\), the OU drift is positive — pulling price upward — making \(P(>\$90)\) roughly \(2\times P(<\$70)\) at 30 days (19.1% vs 9.2%). This directional bias is invisible to GBM, which has no concept of structural levels. The SDE also produces measurably heavier tails than GBM: at 90 days, the 5th–95th percentile range is \$57–\$113 under the SDE versus \$64–\$106 under GBM, at the same baseline volatility.</p>
+
+    <hr class="art-hr">
+    <div class="exit-links">
+      <a href="../docs/case01-framework.pdf" target="_blank" class="exit-btn fill">Read formal derivation (PDF) ↗</a>
+      <a href="https://github.com/aakashagarwal778/geoeconomic-sde/tree/main/cases/01_oil_opec" target="_blank" class="exit-btn out">View code on GitHub ↗</a>
+      <a href="../models/jump-diffusion.html" class="exit-btn out">Open live model →</a>
+    </div>
+  </article>
+
+  <div class="related">
+    <div class="rel-lbl">Linked</div>
+    <div class="rel-links">
+      <a href="../publications/case01-brent.html" class="rel-link">Publication ↗</a>
+      <a href="../models/jump-diffusion.html" class="rel-link">Interactive Model →</a>
+      <a href="ou-foundation.html" class="rel-link">OU Foundation →</a>
+      <a href="gbm-foundation.html" class="rel-link">GBM Foundation →</a>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <div class="fi">
+      <div class="fn">Aakash Agarwal<span>Quantitative Finance · 2025</span></div>
+      <div class="fl">
+        <a href="https://github.com/aakashagarwal778" target="_blank">GitHub</a>
+        <a href="https://www.linkedin.com/in/aakash11agarwal/" target="_blank">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<button class="btn-float" id="theme-float" onclick="toggleTheme()"></button>
+<script>function toggleTheme(){const h=document.documentElement;const l=h.getAttribute('data-theme')==='light';l?h.removeAttribute('data-theme'):h.setAttribute('data-theme','light');localStorage.setItem('theme',l?'dark':'light');updateThemeBtn();}
+function updateThemeBtn(){const btn=document.getElementById('theme-float');if(!btn)return;const isLight=document.documentElement.getAttribute('data-theme')==='light';btn.textContent=isLight?'◑ Dark':'☀ Light';}
+window.addEventListener('DOMContentLoaded',updateThemeBtn);</script>
+</body>
+</html>

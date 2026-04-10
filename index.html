@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aakash Agarwal — Quantitative Finance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')</script>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-brand">
+    <svg width="52" height="36" viewBox="0 0 52 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- baseline -->
+      <line x1="1" y1="32" x2="51" y2="32" stroke="var(--rule2)" stroke-width="0.75"/>
+      <!-- normal distribution — broad, low, symmetric -->
+      <path id="logo-normal"
+        d="M1 31 C6 31 10 30 14 27 C17 24.5 19 19 22 14 C23.5 11 24.5 9 26 8 C27.5 9 28.5 11 30 14 C33 19 35 24.5 38 27 C42 30 46 31 51 31"
+        stroke="var(--logo-normal-stroke)" stroke-width="1.2"
+        stroke-linecap="round" stroke-linejoin="round" fill="none"
+        stroke-dasharray="240" stroke-dashoffset="240"/>
+      <!-- leptokurtic — narrow, tall, sharp peak -->
+      <path id="logo-lepto"
+        d="M1 31 C7 31 12 30.5 16 29 C19 27.5 21 24 22.5 20 C23.5 17 24.5 13 26 3 C27.5 13 28.5 17 29.5 20 C31 24 33 27.5 36 29 C40 30.5 45 31 51 31"
+        stroke="#B87A5B" stroke-width="1.8"
+        stroke-linecap="round" stroke-linejoin="round" fill="none"
+        stroke-dasharray="240" stroke-dashoffset="240"/>
+    </svg>
+    <div class="brand-text">
+      <span class="brand-name">Aakash Agarwal</span>
+      <span class="brand-sub">Quantitative Finance</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#research">Research</a></li>
+    <li><a href="#publications">Publications</a></li>
+    <li><a href="#models">Interactive Models</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+</nav>
+
+<div class="wrap">
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <div class="hero-left">
+    <h1 class="hero-title">Aakash Agarwal</h1>
+    <div class="hero-subtitle">MSc Quantitative Finance</div>
+    <p class="hero-desc">Building rigorous first-principles frameworks across stochastic calculus, derivatives theory, and geoeconomic risk modelling. Every derivation mathematically explicit and computationally verified.</p>
+    <div class="hero-chips">
+      <span class="chip">Stochastic Calculus</span>
+      <span class="chip">Derivatives Pricing</span>
+      <span class="chip">Numerical Methods</span>
+      <span class="chip">Geoeconomic SDEs</span>
+      <span class="chip">Python · LaTeX</span>
+    </div>
+  </div>
+  <div class="hero-div"></div>
+  <div class="hero-right">
+    <div class="sb">
+      <div class="sb-lbl">Active Research</div>
+      <div class="sb-val">Geoeconomic SDE Framework</div>
+      <div class="sb-sub">Case 01 — Brent Crude mean-reversion under OPEC+ band enforcement</div>
+      <span class="pill pill-teal"><span class="live-dot"></span>Case 01 complete</span>
+    </div>
+    <div class="sb">
+      <div class="sb-lbl">Reference Library</div>
+      <div class="sb-val">Math Finance Series</div>
+      <div class="sb-sub">GBM · OU complete. CIR, Heston in progress.</div>
+      <span class="pill pill-amber">Series ongoing</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 01 RESEARCH ═══ -->
+<section id="research">
+  <div class="sec-hd"><span class="s-n">01</span><h2 class="s-t">Research</h2></div>
+  <div class="tabs">
+    <div class="tab active" data-filter="all">All</div>
+    <div class="tab" data-filter="framework">Frameworks</div>
+    <div class="tab" data-filter="sde">SDEs</div>
+    <div class="tab" data-filter="calibration">Calibration</div>
+  </div>
+
+  <a href="research/geoeconomic-sde.html" class="row" data-tags="framework sde calibration">
+    <div class="row-n">001</div>
+    <div><span class="badge b-case">Case 01</span></div>
+    <div>
+      <div class="row-title">Geoeconomic Risk as a Stochastic Process — the OPEC+ Case</div>
+      <div class="row-desc">How cartel-enforced price bands produce mean-reverting dynamics that standard GBM cannot capture, and the jump-diffusion SDE built from economic first principles to model them.</div>
+      <div class="row-tags"><span class="tag">Jump-diffusion</span><span class="tag">Brent Crude</span><span class="tag">Mean-reversion</span><span class="tag">Euler-Maruyama</span><span class="tag">MLE</span></div>
+    </div>
+    <div class="row-arr">↗</div>
+  </a>
+
+  <a href="research/gbm-foundation.html" class="row" data-tags="sde framework">
+    <div class="row-n">002</div>
+    <div><span class="badge b-lib">Derivation</span></div>
+    <div>
+      <div class="row-title">Geometric Brownian Motion and the Itô Correction — Two Routes to Black-Scholes</div>
+      <div class="row-desc">A first-principles derivation of GBM, the role of the −½σ² term, and how the expectation route and the PDE route converge on the same pricing formula.</div>
+      <div class="row-tags"><span class="tag">GBM</span><span class="tag">Itô's Lemma</span><span class="tag">Black-Scholes</span><span class="tag">Feynman-Kac</span></div>
+    </div>
+    <div class="row-arr">↗</div>
+  </a>
+
+  <a href="research/ou-foundation.html" class="row" data-tags="sde calibration">
+    <div class="row-n">003</div>
+    <div><span class="badge b-lib">Derivation</span></div>
+    <div>
+      <div class="row-title">The Ornstein-Uhlenbeck Process — Stationarity, Calibration, and the Vasicek Application</div>
+      <div class="row-desc">Closed-form solution via integrating factor, stationary distribution from Fokker-Planck, MLE calibration, and bond pricing under the Vasicek term structure model.</div>
+      <div class="row-tags"><span class="tag">OU Process</span><span class="tag">Fokker-Planck</span><span class="tag">Vasicek</span><span class="tag">MLE</span><span class="tag">Stationarity</span></div>
+    </div>
+    <div class="row-arr">↗</div>
+  </a>
+</section>
+
+<!-- ═══ 02 PUBLICATIONS ═══ -->
+<section id="publications">
+  <div class="sec-hd"><span class="s-n">02</span><h2 class="s-t">Publications</h2></div>
+  <div class="tabs">
+    <div class="tab active" data-filter="all">All</div>
+    <div class="tab" data-filter="derivation">Technical Notes</div>
+    <div class="tab" data-filter="case">Case Studies</div>
+  </div>
+
+  <a href="publications/case01-brent.html" class="pub-row" data-tags="case">
+    <div class="row-n">001</div>
+    <div><span class="badge b-case">Case Study</span></div>
+    <div>
+      <div class="row-title">Brent Crude Under OPEC+ Band Enforcement: A Jump-Diffusion SDE Approach</div>
+      <div class="row-desc" style="font-family:var(--mono);font-size:10px;color:var(--muted)">Geoeconomic SDE Project · Case 01 · Euler-Maruyama · MLE calibration · 4,648 observations</div>
+    </div>
+    <div class="pub-year">2025 ↗</div>
+  </a>
+
+  <a href="publications/gbm-framework.html" class="pub-row" data-tags="derivation">
+    <div class="row-n">002</div>
+    <div><span class="badge b-lib">Technical Note</span></div>
+    <div>
+      <div class="row-title">Geometric Brownian Motion and Derivative Pricing: A Theoretical Foundation</div>
+      <div class="row-desc" style="font-family:var(--mono);font-size:10px;color:var(--muted)">Math Finance Series · LaTeX PDF · Jupyter notebook · Full derivation</div>
+    </div>
+    <div class="pub-year">2024 ↗</div>
+  </a>
+
+  <a href="publications/ou-framework.html" class="pub-row" data-tags="derivation">
+    <div class="row-n">003</div>
+    <div><span class="badge b-lib">Technical Note</span></div>
+    <div>
+      <div class="row-title">Ornstein-Uhlenbeck Process and Mean-Reversion: A Theoretical Foundation</div>
+      <div class="row-desc" style="font-family:var(--mono);font-size:10px;color:var(--muted)">Math Finance Series · LaTeX PDF · Jupyter notebook · Full derivation</div>
+    </div>
+    <div class="pub-year">2024 ↗</div>
+  </a>
+</section>
+
+<!-- ═══ 03 INTERACTIVE MODELS ═══ -->
+<section id="models">
+  <div class="sec-hd"><span class="s-n">03</span><h2 class="s-t">Interactive Models</h2></div>
+  <div class="tabs">
+    <div class="tab active">All</div>
+    <div class="tab">Simulators</div>
+    <div class="tab">Pricers</div>
+  </div>
+  <div class="mg">
+
+    <a href="models/gbm-simulator.html" class="mc">
+      <div class="mv"><canvas id="cv-gbm" width="500" height="115" style="width:100%;height:115px"></canvas></div>
+      <div class="mb">
+        <div class="mn">GBM Path Simulator</div>
+        <div class="md">Multi-path Geometric Brownian Motion in the browser. Adjust μ, σ, and T to redraw the full path ensemble.</div>
+        <div class="mf"><span class="ms">Vanilla JS · Canvas API</span><span class="ml">Open App ↗</span></div>
+      </div>
+    </a>
+
+    <a href="models/ou-explorer.html" class="mc">
+      <div class="mv"><canvas id="cv-ou" width="500" height="115" style="width:100%;height:115px"></canvas></div>
+      <div class="mb">
+        <div class="mn">OU Mean-Reversion Explorer</div>
+        <div class="md">Path oscillates within the stationary ±σ/√2κ corridor. Adjust κ, θ, and σ to watch the half-life update in real time.</div>
+        <div class="mf"><span class="ms">SciPy · MLE Calibration</span><span class="ml">Open App ↗</span></div>
+      </div>
+    </a>
+
+    <a href="models/jump-diffusion.html" class="mc">
+      <div class="mv"><canvas id="cv-jd" width="500" height="115" style="width:100%;height:115px"></canvas></div>
+      <div class="mb">
+        <div class="mn">Brent Crude Jump-Diffusion</div>
+        <div class="md">Return distribution building in real time. Fat tails form as Poisson jump events arrive. The calibrated OPEC+ model running in the browser.</div>
+        <div class="mf"><span class="ms">Euler-Maruyama · Lee-Mykland</span><span class="ml">Open App ↗</span></div>
+      </div>
+    </a>
+
+    <a href="models/bs-pricer.html" class="mc">
+      <div class="mv"><canvas id="cv-bs" width="500" height="115" style="width:100%;height:115px"></canvas></div>
+      <div class="mb">
+        <div class="mn">Black-Scholes Pricing Engine</div>
+        <div class="md">BS price curve sweeps as the spot moves. Payoff at expiry shown separately so the time value gap is visible.</div>
+        <div class="mf"><span class="ms">Analytical · Full Greeks</span><span class="ml">Open App ↗</span></div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ═══ 04 ABOUT ═══ -->
+<section id="about" style="border-bottom:none">
+  <div class="sec-hd"><span class="s-n">04</span><h2 class="s-t">About</h2></div>
+  <div class="ag">
+    <div class="am">
+      <p class="ap">MSc Quantitative Finance at Kiel University, with industry experience at <strong>Solactive AG</strong> in Fixed Income QIS. There I co-developed a BDC index that launched as a NASDAQ-listed ETF and built calibration frameworks across institutional fixed income products.</p>
+      <p class="ap">My technical focus is <strong>stochastic processes and derivatives pricing</strong>, with an emphasis on building models from first principles rather than adapting standard forms. The work is grounded in full derivations, explicit tractability checks before any numerical step, and calibration against real market data throughout.</p>
+
+      <div class="ahl">Education</div>
+      <div class="er">
+        <div class="ed">MSc Quantitative Finance</div>
+        <div class="ei">Kiel University, Germany · Oct 2023 — Jul 2026</div>
+      </div>
+      <div class="er">
+        <div class="ed">Integrated MSc (Hons) Economics</div>
+        <div class="ei">Doon University, India · Aug 2018 — Jun 2023</div>
+      </div>
+
+      <div class="ahl">Areas of Focus</div>
+      <div class="ir"><div class="id"></div>Stochastic calculus and Itô calculus</div>
+      <div class="ir"><div class="id"></div>Derivatives pricing — PDE and martingale approaches</div>
+      <div class="ir"><div class="id"></div>Fixed income — term structure models, bond pricing</div>
+      <div class="ir"><div class="id"></div>Numerical methods — Euler-Maruyama, finite difference, Monte Carlo</div>
+      <div class="ir"><div class="id"></div>Jump-diffusion and Lévy-driven processes</div>
+      <div class="ir"><div class="id"></div>Calibration — MLE, moment matching, Lee-Mykland filtering</div>
+      <div class="ir"><div class="id"></div>Quantitative index strategies and fixed income QIS</div>
+      <div class="ir" style="color:var(--muted);font-style:italic"><div class="id" style="opacity:.4"></div>and more...</div>
+    </div>
+
+    <div class="ar"></div>
+
+    <div class="as">
+      <div class="ahl" style="margin-top:0">External Profiles</div>
+      <a href="https://github.com/aakashagarwal778" target="_blank" class="sl">
+        <div><div class="sl-n">GitHub</div><div class="sl-s">github.com/aakashagarwal778</div></div>
+        <span class="sl-a">↗</span>
+      </a>
+      <a href="https://www.linkedin.com/in/aakash11agarwal/" target="_blank" class="sl">
+        <div><div class="sl-n">LinkedIn</div><div class="sl-s">linkedin.com/in/aakash11agarwal</div></div>
+        <span class="sl-a">↗</span>
+      </a>
+      <a href="docs/cv.pdf" target="_blank" class="sl">
+        <div><div class="sl-n">CV</div><div class="sl-s">PDF · Updated 2025</div></div>
+        <span class="sl-a">↗</span>
+      </a>
+      <a href="mailto:aakash11agarwal@gmail.com" class="sl">
+        <div><div class="sl-n">Email</div><div class="sl-s">aakash11agarwal@gmail.com</div></div>
+        <span class="sl-a">↗</span>
+      </a>
+
+      <div class="ahl">Repositories</div>
+      <a href="https://github.com/aakashagarwal778/stochastic-finance" target="_blank" class="sl">
+        <div><div class="sl-n">stochastic-finance</div><div class="sl-s">Math Finance Series · GBM (01_gbm) · OU (02_ou)</div></div>
+        <span class="sl-a">↗</span>
+      </a>
+      <a href="https://github.com/aakashagarwal778/geoeconomic-sde" target="_blank" class="sl">
+        <div><div class="sl-n">geoeconomic-sde</div><div class="sl-s">Geoeconomic SDE Framework</div></div>
+        <span class="sl-a">↗</span>
+      </a>
+
+      <div class="ahl">Technical Stack</div>
+      <div class="sr"><span class="sk">Modelling</span><span class="sv">Python · NumPy · SciPy</span></div>
+      <div class="sr"><span class="sk">Languages</span><span class="sv">Python · R · MATLAB · SQL</span></div>
+      <div class="sr"><span class="sk">Typesetting</span><span class="sv">LaTeX · TikZ · MathJax</span></div>
+      <div class="sr"><span class="sk">Notebooks</span><span class="sv">Jupyter · Matplotlib</span></div>
+      <div class="sr"><span class="sk">Tools</span><span class="sv">PyCharm · Git · GitHub</span></div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /wrap -->
+
+<footer class="foot">
+  <div class="wrap fi">
+    <div class="fn">Aakash Agarwal<span>Quantitative Finance · 2025</span></div>
+    <div class="fl">
+      <a href="https://github.com/aakashagarwal778" target="_blank">GitHub</a>
+      <a href="https://www.linkedin.com/in/aakash11agarwal/" target="_blank">LinkedIn</a>
+      <a href="docs/cv.pdf" target="_blank">CV</a>
+      <a href="mailto:aakash11agarwal@gmail.com">Email</a>
+    </div>
+  </div>
+</footer>
+
+<button class="btn-float" id="theme-float" onclick="toggleTheme()"></button>
+<button id="term-toggle" onclick="toggleTerminal()">&#62;_</button>
+<div id="term-window">
+  <div id="term-header">
+    <span style="color:#2dd4bf">aakash@quant:~</span>
+    <span onclick="toggleTerminal()">✕</span>
+  </div>
+  <div id="term-body" onclick="document.getElementById('term-input').focus()">
+    <div class="term-line" style="color:#6E7681">Portfolio v1.0 · Kiel, Germany</div>
+    <div class="term-line">Type <span style="color:#B87A5B">'help'</span> for commands.</div>
+    <div id="term-history"></div>
+    <div class="term-input-row">
+      <span style="color:#2dd4bf">~$</span>
+      <input id="term-input" type="text" autocomplete="off" spellcheck="false">
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── LOGO ANIMATION ── */
+(function(){
+  const n=document.getElementById('logo-normal'),l=document.getElementById('logo-lepto');
+  const L=240,d1=1100,pause=420,d2=1400;
+  let start=null,done=false;
+  function ease(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2}
+  function tick(ts){
+    if(done)return;
+    if(!start)start=ts;
+    const el=ts-start;
+    if(el<d1){n.style.strokeDashoffset=L*(1-ease(el/d1));l.style.strokeDashoffset=L;}
+    else if(el<d1+pause){n.style.strokeDashoffset=0;l.style.strokeDashoffset=L;}
+    else{const p=Math.min(1,(el-d1-pause)/d2);n.style.strokeDashoffset=0;l.style.strokeDashoffset=L*(1-ease(p));if(p>=1){done=true;return;}}
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+
+/* ── THEME ── */
+function toggleTheme(){
+  const h=document.documentElement;
+  const light=h.getAttribute('data-theme')==='light';
+  light?h.removeAttribute('data-theme'):h.setAttribute('data-theme','light');
+  localStorage.setItem('theme',light?'dark':'light');
+  updateThemeBtn();
+}
+function updateThemeBtn(){
+  const btn=document.getElementById('theme-float');if(!btn)return;
+  const isLight=document.documentElement.getAttribute('data-theme')==='light';
+  btn.textContent=isLight?'◑ Dark':'☀ Light';
+}
+window.addEventListener('DOMContentLoaded',updateThemeBtn);
+
+/* ── NAV ACTIVE ── */
+const secs=document.querySelectorAll('section[id]');
+window.addEventListener('scroll',()=>{
+  let c='';secs.forEach(s=>{if(window.scrollY>=s.offsetTop-80)c=s.id});
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+c));
+},{passive:true});
+
+/* ── TABS (research + publications) ── */
+document.querySelectorAll('.tabs').forEach(tabs=>{
+  tabs.querySelectorAll('.tab[data-filter]').forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      tabs.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      const filter=tab.dataset.filter;
+      const section=tabs.closest('section');
+      section.querySelectorAll('.row[data-tags],.pub-row[data-tags]').forEach(row=>{
+        if(filter==='all')row.style.display='';
+        else row.style.display=row.dataset.tags.includes(filter)?'':'none';
+      });
+    });
+  });
+  tabs.querySelectorAll('.tab:not([data-filter])').forEach(tab=>{
+    tab.addEventListener('click',()=>{tabs.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');});
+  });
+});
+
+/* ── UTILITY ── */
+function bm(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+
+/* ── GBM CANVAS ── */
+(function(){
+  const c=document.getElementById('cv-gbm');if(!c)return;
+  const ctx=c.getContext('2d');const N=8;let paths=[],step=0;
+  function init(){paths=[];step=0;for(let i=0;i<N;i++)paths.push([c.height/2+(i-3.5)*4]);}
+  function draw(){
+    const style=getComputedStyle(document.body);
+    const isLight=document.documentElement.getAttribute('data-theme')==='light';
+    ctx.fillStyle=style.getPropertyValue('--bg2').trim()||(isLight?'#F2F0EB':'#0F0F0F');ctx.fillRect(0,0,c.width,c.height);
+    for(let i=0;i<N;i++){
+      const ly=paths[i][paths[i].length-1];
+      paths[i].push(Math.max(6,Math.min(c.height-6,ly+(Math.random()-.47)*5.5)));
+      ctx.beginPath();ctx.moveTo(0,paths[i][0]);
+      for(let j=1;j<paths[i].length;j++)ctx.lineTo(j*2,paths[i][j]);
+      ctx.strokeStyle=i===0?(style.getPropertyValue('--accent').trim()||(isLight?'#0F2942':'#B87A5B')):(isLight?'rgba(0,0,0,0.22)':'rgba(255,255,255,0.18)');
+      ctx.lineWidth=i===0?2:0.9;ctx.lineJoin='round';ctx.stroke();
+    }
+    step++;if(step*2>c.width)init();requestAnimationFrame(draw);
+  }
+  init();draw();
+})();
+
+/* ── OU CANVAS ── */
+(function(){
+  const c=document.getElementById('cv-ou');if(!c)return;
+  const ctx=c.getContext('2d');
+  const theta=c.height/2,sigma=2.5,kappa=0.038;
+  const bandH=Math.min((sigma/Math.sqrt(2*kappa))*2.8,c.height*0.38);
+  let x=theta-24,path=[],step=0;
+  function init(){x=theta-24;path=[x];step=0;}
+  function draw(){
+    x=Math.max(8,Math.min(c.height-8,x+kappa*(theta-x)+sigma*bm()));path.push(x);
+    const style=getComputedStyle(document.body);
+    const isLight=document.documentElement.getAttribute('data-theme')==='light';
+    const bg=style.getPropertyValue('--bg2').trim()||(isLight?'#F2F0EB':'#0F0F0F');
+    const ac=style.getPropertyValue('--accent').trim()||(isLight?'#0F2942':'#B87A5B');
+    const tealCol=isLight?'rgba(17,64,38,':'rgba(45,212,191,';
+    const bandCol=isLight?'rgba(122,75,14,':'rgba(184,122,91,';
+    ctx.fillStyle=bg;ctx.fillRect(0,0,c.width,c.height);
+    ctx.fillStyle=bandCol+'0.06)';ctx.fillRect(0,theta-bandH,c.width,bandH*2);
+    ctx.setLineDash([3,5]);ctx.strokeStyle=bandCol+'0.28)';ctx.lineWidth=0.8;
+    ctx.beginPath();ctx.moveTo(0,theta-bandH);ctx.lineTo(c.width,theta-bandH);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(0,theta+bandH);ctx.lineTo(c.width,theta+bandH);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle=bandCol+'0.5)';ctx.font='7.5px Geist Mono,monospace';
+    ctx.fillText('+σ/√2κ',4,theta-bandH-3);ctx.fillText('−σ/√2κ',4,theta+bandH+10);
+    ctx.setLineDash([5,4]);ctx.strokeStyle=tealCol+'0.45)';ctx.lineWidth=0.9;
+    ctx.beginPath();ctx.moveTo(0,theta);ctx.lineTo(c.width,theta);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=tealCol+'0.7)';ctx.font='8px Geist Mono,monospace';ctx.fillText('θ',3,theta-4);
+    ctx.beginPath();ctx.moveTo(0,path[0]);
+    for(let i=1;i<path.length;i++)ctx.lineTo(i*2,path[i]);
+    ctx.strokeStyle=ac;ctx.lineWidth=1.7;ctx.lineJoin='round';ctx.stroke();
+    if(path.length>1&&(path[path.length-2]-theta)*(path[path.length-1]-theta)<0){
+      ctx.beginPath();ctx.arc((path.length-1)*2,theta,2.5,0,Math.PI*2);ctx.fillStyle=tealCol+'0.65)';ctx.fill();
+    }
+    step++;if(step*2>c.width)init();requestAnimationFrame(draw);
+  }
+  init();draw();
+})();
+
+/* ── JUMP-DIFFUSION HISTOGRAM ── */
+(function(){
+  const c=document.getElementById('cv-jd');if(!c)return;
+  const ctx=c.getContext('2d');
+  const BINS=34,sigma=0.022,lambda=0.008,jumpSig=0.09;
+  const binMin=-0.28,binMax=0.28;
+  let counts,maxCount,total,jumpTotal,frameCount;
+  function reset(){
+    counts=new Array(BINS).fill(0);maxCount=1;total=0;jumpTotal=0;frameCount=0;
+  }
+  function binIdx(r){return Math.max(0,Math.min(BINS-1,Math.floor((r-binMin)/(binMax-binMin)*BINS)));}
+  function addSamples(n){
+    for(let i=0;i<n;i++){
+      const jumped=Math.random()<lambda;
+      const j=jumped?(Math.random()>.5?1:-1)*(jumpSig+Math.random()*jumpSig):0;
+      const r=sigma*bm()+j;
+      const idx=binIdx(r);counts[idx]++;
+      if(counts[idx]>maxCount)maxCount=counts[idx];
+      if(jumped)jumpTotal++;total++;
+    }
+  }
+  reset();
+  function draw(){
+    /* reset every ~600 frames (~10s) so animation stays visibly alive */
+    if(frameCount>600){reset();}
+    addSamples(80);
+    frameCount++;
+    const isLight=document.documentElement.getAttribute('data-theme')==='light';
+    const bg=isLight?'#F2F0EB':'#0F0F0F';
+    /* bar colours — body warm accent, tails muted red */
+    const barBody=isLight?'rgba(122,75,14,0.55)':'rgba(184,122,91,0.55)';
+    const barTail=isLight?'rgba(139,32,32,0.6)':'rgba(220,90,90,0.6)';
+    const zeroCurveCol=isLight?'rgba(0,0,0,0.14)':'rgba(255,255,255,0.1)';
+    const labelCol=isLight?'rgba(100,30,30,0.7)':'rgba(220,130,130,0.8)';
+    ctx.fillStyle=bg;ctx.fillRect(0,0,c.width,c.height);
+    const pad=12,chartH=c.height-pad*2,bw=(c.width-pad*2)/BINS;
+    /* histogram bars — drawn first so curve overlays them */
+    for(let i=0;i<BINS;i++){
+      const bh=counts[i]/maxCount*chartH*0.9;
+      const x=pad+i*bw,y=pad+chartH-bh;
+      const isTail=(i<BINS*0.18||i>BINS*0.82);
+      ctx.fillStyle=isTail?barTail:barBody;
+      ctx.fillRect(x,y,bw-1,bh);
+    }
+    /* normal reference curve — scaled to match histogram maxCount so it sits at same height as bars */
+    const normPeak=1/(sigma*2.5066); /* PDF max value */
+    const normScale=chartH*0.9; /* same scale as bars */
+    ctx.beginPath();
+    for(let px=0;px<=c.width-pad*2;px++){
+      const r=binMin+(px/(c.width-pad*2))*(binMax-binMin);
+      const nd=Math.exp(-r*r/(2*sigma*sigma))/(sigma*2.5066);
+      /* scale: nd/normPeak gives [0,1], multiply by normScale for pixels */
+      const py=pad+chartH-(nd/normPeak)*normScale;
+      px===0?ctx.moveTo(px+pad,py):ctx.lineTo(px+pad,py);
+    }
+    const normalCurveCol=isLight?'rgba(0,0,0,0.22)':'rgba(255,255,255,0.18)';
+    ctx.strokeStyle=normalCurveCol;ctx.lineWidth=1.2;ctx.setLineDash([4,3]);ctx.stroke();ctx.setLineDash([]);
+    /* zero line */
+    const zx=pad+binIdx(0)*bw;
+    ctx.setLineDash([2,3]);ctx.strokeStyle=zeroCurveCol;ctx.lineWidth=0.7;
+    ctx.beginPath();ctx.moveTo(zx,pad);ctx.lineTo(zx,c.height-pad);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=labelCol;ctx.font='8px Geist Mono,monospace';
+    ctx.fillText('n='+total,pad,pad+10);
+    ctx.fillText('fat tail',pad,c.height-pad-3);
+    ctx.fillText('fat tail',c.width-pad-42,c.height-pad-3);
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ── BLACK-SCHOLES CANVAS ── */
+(function(){
+  const c=document.getElementById('cv-bs');if(!c)return;
+  const ctx=c.getContext('2d');
+  function normCDF(x){return 0.5*(1+Math.tanh(x*0.7071*0.8862));}
+  const K=0.52,r=0.05,sig=0.20,T=1.0;
+  let t=0;
+  function draw(){
+    const isLight=document.documentElement.getAttribute('data-theme')==='light';
+    const style=getComputedStyle(document.body);
+    const bg=style.getPropertyValue('--bg2').trim()||(isLight?'#F2F0EB':'#0F0F0F');
+    const ac=style.getPropertyValue('--accent').trim()||(isLight?'#0F2942':'#B87A5B');
+    const dimLabel=isLight?'rgba(0,0,0,0.28)':'rgba(255,255,255,0.2)';
+    ctx.fillStyle=bg;ctx.fillRect(0,0,c.width,c.height);
+    const S=0.26+0.32*Math.sin(t*0.015),scale=c.width/0.9,Kpx=K*scale;
+    /* K strike line — dashed, visible */
+    ctx.setLineDash([3,4]);ctx.strokeStyle=isLight?'rgba(0,0,0,0.22)':'rgba(255,255,255,0.2)';ctx.lineWidth=0.9;
+    ctx.beginPath();ctx.moveTo(Kpx,0);ctx.lineTo(Kpx,c.height);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=isLight?'rgba(0,0,0,0.35)':'rgba(255,255,255,0.3)';ctx.font='7.5px Geist Mono,monospace';ctx.fillText('K',Kpx+3,10);
+    /* BS curve — accent, solid */
+    ctx.beginPath();
+    for(let px=2;px<=c.width;px+=2){
+      const s=px/scale;if(s<0.01)continue;
+      const d1=(Math.log(s/K)+(r+.5*sig*sig)*T)/(sig*Math.sqrt(T));
+      const price=s*normCDF(d1)-K*Math.exp(-r*T)*normCDF(d1-sig*Math.sqrt(T));
+      const py=c.height-4-Math.max(0,price)*c.height*1.3;
+      px===2?ctx.moveTo(px,Math.min(c.height-2,py)):ctx.lineTo(px,Math.min(c.height-2,py));
+    }
+    ctx.strokeStyle=ac;ctx.lineWidth=2.4;ctx.lineJoin='round';ctx.stroke();
+    const spx=S*scale,sd1=(Math.log(S/K)+(r+.5*sig*sig)*T)/(sig*Math.sqrt(T));
+    const sp=S*normCDF(sd1)-K*Math.exp(-r*T)*normCDF(sd1-sig*Math.sqrt(T));
+    const spy=c.height-4-Math.max(0,sp)*c.height*1.3;
+    ctx.beginPath();ctx.arc(spx,Math.max(4,Math.min(c.height-4,spy)),3.5,0,Math.PI*2);
+    ctx.fillStyle=ac;ctx.fill();
+    t++;requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ── TERMINAL ── */
+const termWindow=document.getElementById('term-window');
+const termInput=document.getElementById('term-input');
+const termHistory=document.getElementById('term-history');
+function toggleTerminal(){
+  termWindow.style.display=termWindow.style.display==='flex'?'none':'flex';
+  if(termWindow.style.display==='flex')termInput.focus();
+}
+termInput.addEventListener('keypress',function(e){
+  if(e.key!=='Enter')return;
+  const cmd=termInput.value.trim().toLowerCase();termInput.value='';if(!cmd)return;
+  termHistory.innerHTML+=`<div class="term-line" style="margin-top:8px"><span style="color:#2dd4bf">~$</span> ${cmd}</div>`;
+  let res='';
+  switch(cmd){
+    case 'help':res="Available:<br>&nbsp;&nbsp;<span style='color:#B87A5B'>run_model</span> — OPEC+ simulation<br>&nbsp;&nbsp;<span style='color:#B87A5B'>whoami</span> &nbsp;&nbsp;— author info<br>&nbsp;&nbsp;<span style='color:#B87A5B'>ls</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— list files<br>&nbsp;&nbsp;<span style='color:#B87A5B'>clear</span> &nbsp;&nbsp;— clear terminal";break;
+    case 'whoami':res="Aakash Agarwal · MSc Quantitative Finance · Kiel University · GPA 1.3<br>Previously: Quant Intern, Solactive AG (Fixed Income QIS)";break;
+    case 'ls':res="<span style='color:#2dd4bf'>research/</span> &nbsp;geoeconomic-sde · gbm-foundation · ou-foundation<br><span style='color:#B87A5B'>publications/</span> case01-brent · gbm-framework · ou-framework<br><span style='color:#f59e0b'>models/</span> &nbsp;&nbsp;&nbsp;gbm-simulator · ou-explorer · jump-diffusion · bs-pricer<br><span style='color:#f87171'>docs/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gbm-framework.pdf · ou-framework.pdf · case01-framework.pdf · cv.pdf";break;
+    case 'run_model':res="<span style='color:#6E7681'>Initializing Euler-Maruyama...</span><br><span style='color:#6E7681'>Loading BZ=F: 4,648 obs (2000–2026)</span><br><span style='color:#6E7681'>Calibrating: κ=0.35 θ=log(87.11) σ₀=0.258 α=1.39 λ=4.12</span><br><strong style='color:#E5E7EB'>P(in $70–$90 band at 30d): 71.7%</strong>";break;
+    case 'clear':termHistory.innerHTML='';return;
+    default:res=`command not found: ${cmd}`;
+  }
+  termHistory.innerHTML+=`<div class="term-line" style="margin-top:4px;color:#A1A1AA">${res}</div>`;
+  document.getElementById('term-body').scrollTop=9999;
+});
+</script>
+</body>
+</html>

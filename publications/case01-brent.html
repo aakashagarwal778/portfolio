@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brent Crude Under OPEC+ Band Enforcement — Aakash Agarwal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')</script>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body>
+<nav class="nav-spoke">
+  <a href="../index.html#publications" class="nav-back">← Publications</a>
+  <div class="nav-right-spoke">
+    
+    <a href="../index.html" class="nav-brand-spoke">Aakash Agarwal</a>
+  </div>
+</nav>
+
+<div class="spoke-page">
+  <header class="art-hd">
+    <div class="art-eye">Publication · Case Study · Geoeconomic SDE Project · Case 01</div>
+    <h1 class="art-title">Brent Crude Under OPEC+ Band Enforcement: A Jump-Diffusion SDE Approach</h1>
+    <div class="art-meta">
+      <span>Geoeconomic SDE Series · Case 01</span>
+      <span>LaTeX PDF · Calibration data</span>
+      <span>Data: BZ=F · 4,648 obs · 2000–2026</span>
+      <span>April 2025</span>
+    </div>
+    <div class="exit-links" style="padding-top:0;margin-bottom:32px">
+      <a href="../docs/case01-framework.pdf" target="_blank" class="exit-btn fill">Download PDF ↗</a>
+      <a href="https://github.com/aakashagarwal778/geoeconomic-sde/tree/main/cases/01_oil_opec" target="_blank" class="exit-btn out">View Python code ↗</a>
+      <a href="../models/jump-diffusion.html" class="exit-btn out">Open live model →</a>
+    </div>
+  </header>
+
+  <div class="art-body">
+    <div class="pub-snap-lbl">Snapshot</div>
+    <p style="font-size:15px;color:var(--dim);line-height:1.88;font-weight:300;margin-bottom:20px">Brent crude does not random-walk indefinitely. Over medium horizons it exhibits persistent mean-reversion toward a structural band of approximately $70–$90, enforced by OPEC+ production decisions and US shale supply response. This document derives a jump-diffusion SDE from those economic mechanisms, calibrates it via MLE on 4,648 daily observations, and produces tradeable probability distributions over price horizons.</p>
+
+    <div class="pub-result">
+      <div class="pub-rl">Key result — 30-day horizon from $82</div>
+      <div class="pub-rv">P(in $70–$90 band): 71.7%</div>
+      <div class="pub-rs">P(&gt;$90): 19.1% · P(&lt;$70): 9.2% · Asymmetry from OU drift toward θ = $87.11</div>
+    </div>
+
+    <div class="pub-result">
+      <div class="pub-rl">Core SDE</div>
+      <div class="pub-rv">\(dX = \kappa(\theta-X)\,dt + \sigma_0(1+\alpha|X-\theta|)\,dW + J\,dq\)</div>
+      <div class="pub-rs">Nonlinear diffusion breaks Fokker-Planck tractability → Euler-Maruyama required</div>
+    </div>
+
+    <div class="pub-chapters">
+      <div class="pub-ch"><div class="pub-ch-n">§1</div><div class="pub-ch-t">Observation and economic hypothesis — the two-actor band mechanism</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§2</div><div class="pub-ch-t">SDE derivation — drift, diffusion, and jump term by term</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§3</div><div class="pub-ch-t">Analytical tractability check — why Fokker-Planck fails</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§4</div><div class="pub-ch-t">Euler-Maruyama discretisation and implementation architecture</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§5</div><div class="pub-ch-t">MLE calibration on BZ=F — jump filtering via Lee-Mykland 3σ threshold</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§6</div><div class="pub-ch-t">Monte Carlo results — scenario probability table and tradeable inference</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§7</div><div class="pub-ch-t">Edge over Black-Scholes — directional asymmetry and tail mass comparison</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§8</div><div class="pub-ch-t">Project context — Case 01 of five; each case introduces one new numerical technique</div></div>
+    </div>
+  </div>
+
+  <div class="related">
+    <div class="rel-lbl">Linked</div>
+    <div class="rel-links">
+      <a href="../research/geoeconomic-sde.html" class="rel-link">Research article →</a>
+      <a href="../models/jump-diffusion.html" class="rel-link">Interactive Model →</a>
+      <a href="../research/ou-foundation.html" class="rel-link">OU Foundation →</a>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <div class="fi">
+      <div class="fn">Aakash Agarwal<span>Quantitative Finance · 2025</span></div>
+      <div class="fl"><a href="https://github.com/aakashagarwal778" target="_blank">GitHub</a><a href="https://www.linkedin.com/in/aakash11agarwal/" target="_blank">LinkedIn</a></div>
+    </div>
+  </footer>
+</div>
+
+<button class="btn-float" id="theme-float" onclick="toggleTheme()"></button>
+<script>function toggleTheme(){const h=document.documentElement;const l=h.getAttribute('data-theme')==='light';l?h.removeAttribute('data-theme'):h.setAttribute('data-theme','light');localStorage.setItem('theme',l?'dark':'light');updateThemeBtn();}
+function updateThemeBtn(){const btn=document.getElementById('theme-float');if(!btn)return;const isLight=document.documentElement.getAttribute('data-theme')==='light';btn.textContent=isLight?'◑ Dark':'☀ Light';}
+window.addEventListener('DOMContentLoaded',updateThemeBtn);</script>
+</body>
+</html>

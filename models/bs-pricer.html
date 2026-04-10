@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Black-Scholes Pricing Engine — Aakash Agarwal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')</script>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.proj-page{max-width:1080px;margin:0 auto;padding:0 44px}
+.proj-hd{padding:48px 0 32px;border-bottom:1px solid var(--rule)}
+.proj-eye{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.proj-title{font-family:var(--serif);font-size:clamp(24px,3vw,34px);font-weight:500;color:var(--bright);letter-spacing:-.01em;margin-bottom:10px;line-height:1.15}
+.proj-desc{font-size:14px;color:var(--dim);line-height:1.8;max-width:680px;font-weight:300;margin-bottom:0}
+.pricer-wrap{display:grid;grid-template-columns:280px 1fr;gap:0;border:1px solid var(--rule2);margin:24px 0;overflow:hidden}
+.inputs{padding:26px 22px;background:var(--bg3);border-right:1px solid var(--rule2);display:flex;flex-direction:column;gap:16px}
+.inp-lbl{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.inp-field{width:100%;background:var(--bg2);border:1px solid var(--rule2);color:var(--bright);font-family:var(--mono);font-size:13px;padding:9px 12px;outline:none;transition:border-color .2s}
+.inp-field:focus{border-color:var(--accent-bd)}
+.type-toggle{display:flex;border:1px solid var(--rule2);overflow:hidden}
+.type-btn{flex:1;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:9px 0;background:none;border:none;color:var(--muted);cursor:pointer;transition:all .15s}
+.type-btn.active{background:var(--accent);color:var(--bg)}
+.calc-btn{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:11px 0;background:var(--accent);color:var(--bg);border:none;cursor:pointer;width:100%;transition:opacity .15s;margin-top:4px}
+.calc-btn:hover{opacity:.85}
+.results{padding:26px 28px;background:var(--bg2)}
+.price-display{margin-bottom:28px;padding-bottom:22px;border-bottom:1px solid var(--rule2)}
+.price-lbl{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+.price-val{font-family:var(--serif);font-size:52px;font-weight:500;color:var(--accent);line-height:1}
+.price-d{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:5px}
+.greeks-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--rule2);border:1px solid var(--rule2);margin-bottom:24px}
+.greek{background:var(--bg);padding:14px 16px}
+.greek-sym{font-family:var(--serif);font-size:22px;color:var(--accent);margin-bottom:3px;font-style:italic}
+.greek-val{font-family:var(--mono);font-size:13px;color:var(--bright);font-weight:400}
+.greek-name{font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-top:2px}
+.payoff-wrap{border:1px solid var(--rule)}
+.payoff-lbl{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:9px 14px;border-bottom:1px solid var(--rule)}
+#payoff-canvas{display:block;width:100%;height:180px}
+.theory-link{padding:18px 22px;background:var(--bg2);border:1px solid var(--rule2);display:flex;align-items:center;justify-content:space-between;text-decoration:none;transition:all .2s;margin-bottom:44px}.theory-link:hover{background:var(--bg3);border-color:var(--accent-bd)}
+.tl-lbl{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}.tl-title{font-family:var(--serif);font-size:16px;font-weight:500;color:var(--bright)}.tl-arr{font-family:var(--mono);font-size:10px;color:var(--muted);flex-shrink:0;margin-left:20px;transition:color .2s}.theory-link:hover .tl-arr{color:var(--accent)}
+@media(max-width:700px){.pricer-wrap{grid-template-columns:1fr}.inputs{border-right:none;border-bottom:1px solid var(--rule2)}.greeks-grid{grid-template-columns:repeat(3,1fr)}.proj-page{padding:0 24px}}
+</style>
+</head>
+<body>
+<nav class="nav-spoke">
+  <a href="../index.html#models" class="nav-back">← Interactive Models</a>
+  <div class="nav-right-spoke">
+    
+    <a href="../index.html" class="nav-brand-spoke">Aakash Agarwal</a>
+  </div>
+</nav>
+<div class="proj-page">
+  <header class="proj-hd">
+    <div class="proj-eye">Interactive Model · Black-Scholes Pricing Engine</div>
+    <h1 class="proj-title">Black-Scholes Pricing Engine</h1>
+    <p class="proj-desc">Input spot, strike, rate, volatility, and expiry to get the price and full Greeks analytically. The payoff profile redraws as you type. All calculations run directly from the closed-form Black-Scholes formula.</p>
+  </header>
+
+  <div class="pricer-wrap">
+    <div class="inputs">
+      <div>
+        <div class="inp-lbl">Option type</div>
+        <div class="type-toggle">
+          <button class="type-btn active" id="btn-call" onclick="setType('call')">Call</button>
+          <button class="type-btn" id="btn-put" onclick="setType('put')">Put</button>
+        </div>
+      </div>
+      <div><div class="inp-lbl">Spot price S</div><input class="inp-field" id="inp-s" type="number" value="100" step="0.5"></div>
+      <div><div class="inp-lbl">Strike K</div><input class="inp-field" id="inp-k" type="number" value="100" step="0.5"></div>
+      <div><div class="inp-lbl">Risk-free rate r</div><input class="inp-field" id="inp-r" type="number" value="0.05" step="0.005"></div>
+      <div><div class="inp-lbl">Volatility σ (annual)</div><input class="inp-field" id="inp-v" type="number" value="0.20" step="0.01"></div>
+      <div><div class="inp-lbl">Time to expiry T (years)</div><input class="inp-field" id="inp-t" type="number" value="1.0" step="0.1"></div>
+      <button class="calc-btn" onclick="price()">Calculate →</button>
+    </div>
+    <div class="results">
+      <div class="price-display">
+        <div class="price-lbl" id="price-lbl">Call price</div>
+        <div class="price-val" id="price-out">—</div>
+        <div class="price-d" id="price-d">d₁: — &nbsp;&nbsp; d₂: —</div>
+      </div>
+      <div class="greeks-grid">
+        <div class="greek"><div class="greek-sym">Δ</div><div class="greek-val" id="g-delta">—</div><div class="greek-name">Delta</div></div>
+        <div class="greek"><div class="greek-sym">Γ</div><div class="greek-val" id="g-gamma">—</div><div class="greek-name">Gamma</div></div>
+        <div class="greek"><div class="greek-sym">Θ</div><div class="greek-val" id="g-theta">—</div><div class="greek-name">Theta/day</div></div>
+        <div class="greek"><div class="greek-sym">ν</div><div class="greek-val" id="g-vega">—</div><div class="greek-name">Vega/1%</div></div>
+        <div class="greek"><div class="greek-sym">ρ</div><div class="greek-val" id="g-rho">—</div><div class="greek-name">Rho/1%</div></div>
+      </div>
+      <div class="payoff-wrap">
+        <div class="payoff-lbl">Payoff profile at expiry</div>
+        <canvas id="payoff-canvas"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <a href="../research/gbm-foundation.html" class="theory-link">
+    <div><div class="tl-lbl">The theory behind Black-Scholes</div><div class="tl-title">Geometric Brownian Motion and the Itô Correction — Two Routes to Black-Scholes</div></div>
+    <span class="tl-arr">Read article →</span>
+  </a>
+
+  <div class="related"><div class="rel-lbl">See also</div><div class="rel-links"><a href="../publications/gbm-framework.html" class="rel-link">GBM Publication ↗</a><a href="gbm-simulator.html" class="rel-link">GBM Simulator →</a><a href="../research/gbm-foundation.html" class="rel-link">Research article →</a></div></div>
+  <footer class="foot"><div class="fi"><div class="fn">Aakash Agarwal<span>Quantitative Finance · 2025</span></div><div class="fl"><a href="https://github.com/aakashagarwal778" target="_blank">GitHub</a><a href="https://www.linkedin.com/in/aakash11agarwal/" target="_blank">LinkedIn</a></div></div></footer>
+</div>
+
+<button class="btn-float" id="theme-float" onclick="toggleTheme()"></button>
+<script>
+function toggleTheme(){const h=document.documentElement;const l=h.getAttribute('data-theme')==='light';l?h.removeAttribute('data-theme'):h.setAttribute('data-theme','light');localStorage.setItem('theme',l?'dark':'light');updateThemeBtn();price()}
+function updateThemeBtn(){const btn=document.getElementById('theme-float');if(!btn)return;const isLight=document.documentElement.getAttribute('data-theme')==='light';btn.textContent=isLight?'◑ Dark':'☀ Light';}
+window.addEventListener('DOMContentLoaded',updateThemeBtn);
+let optType='call';
+function setType(t){optType=t;document.getElementById('btn-call').classList.toggle('active',t==='call');document.getElementById('btn-put').classList.toggle('active',t==='put');price()}
+function normCDF(x){return 0.5*(1+Math.tanh(x*0.7071*0.8862))}
+function normPDF(x){return Math.exp(-x*x/2)/2.5066}
+function price(){
+  const S=parseFloat(document.getElementById('inp-s').value);
+  const K=parseFloat(document.getElementById('inp-k').value);
+  const r=parseFloat(document.getElementById('inp-r').value);
+  const v=parseFloat(document.getElementById('inp-v').value);
+  const T=parseFloat(document.getElementById('inp-t').value);
+  if([S,K,r,v,T].some(isNaN)||T<=0||v<=0||S<=0||K<=0)return;
+  const d1=(Math.log(S/K)+(r+.5*v*v)*T)/(v*Math.sqrt(T));
+  const d2=d1-v*Math.sqrt(T);
+  const Nd1=normCDF(d1),Nd2=normCDF(d2),nNd1=normCDF(-d1),nNd2=normCDF(-d2),nd1=normPDF(d1),disc=Math.exp(-r*T);
+  let p,delta,theta,rho;
+  if(optType==='call'){p=S*Nd1-K*disc*Nd2;delta=Nd1;theta=-(S*nd1*v/(2*Math.sqrt(T))+r*K*disc*Nd2)/365;rho=K*T*disc*Nd2/100}
+  else{p=K*disc*nNd2-S*nNd1;delta=Nd1-1;theta=-(S*nd1*v/(2*Math.sqrt(T))-r*K*disc*nNd2)/365;rho=-K*T*disc*nNd2/100}
+  const gamma=nd1/(S*v*Math.sqrt(T)),vega=S*nd1*Math.sqrt(T)/100;
+  document.getElementById('price-lbl').textContent=optType==='call'?'Call price':'Put price';
+  document.getElementById('price-out').textContent=p.toFixed(4);
+  document.getElementById('price-d').textContent='d₁: '+d1.toFixed(4)+'    d₂: '+d2.toFixed(4);
+  document.getElementById('g-delta').textContent=delta.toFixed(4);
+  document.getElementById('g-gamma').textContent=gamma.toFixed(4);
+  document.getElementById('g-theta').textContent=theta.toFixed(4);
+  document.getElementById('g-vega').textContent=vega.toFixed(4);
+  document.getElementById('g-rho').textContent=rho.toFixed(4);
+  drawPayoff(S,K,optType);
+}
+function drawPayoff(S,K,type){
+  const c=document.getElementById('payoff-canvas');const W=c.offsetWidth,H=c.offsetHeight||180;c.width=W;c.height=H;
+  const ctx=c.getContext('2d');const isLight=document.documentElement.getAttribute('data-theme')==='light';
+  ctx.fillStyle=isLight?'#F2F0EB':'#0F0F0F';ctx.fillRect(0,0,W,H);
+  const gc=isLight?'rgba(0,0,0,0.06)':'rgba(255,255,255,0.04)';
+  ctx.strokeStyle=gc;ctx.lineWidth=0.7;
+  for(let i=1;i<4;i++){ctx.beginPath();ctx.moveTo(0,H*i/4);ctx.lineTo(W,H*i/4);ctx.stroke()}
+  const sMin=S*0.3,sMax=S*1.7;
+  const payoffs=[];
+  for(let i=0;i<=100;i++){const sp=sMin+(i/100)*(sMax-sMin);payoffs.push(type==='call'?Math.max(0,sp-K):Math.max(0,K-sp))}
+  const maxP=Math.max(...payoffs,1);const pad=maxP*.1;
+  const toY=v=>H*.88-(v/(maxP+pad))*H*.78;const toX=i=>(i/100)*W;
+
+  /* ── K strike line — strong contrast ── */
+  const kx=(K-sMin)/(sMax-sMin)*W;
+  ctx.strokeStyle=isLight?'rgba(0,0,0,0.35)':'rgba(255,255,255,0.35)';
+  ctx.lineWidth=1;ctx.setLineDash([4,3]);
+  ctx.beginPath();ctx.moveTo(kx,0);ctx.lineTo(kx,H);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=isLight?'rgba(0,0,0,0.45)':'rgba(255,255,255,0.45)';
+  ctx.font='9px Geist Mono,monospace';ctx.fillText('K',kx+4,13);
+
+  /* ── payoff kink — teal SOLID ── */
+  const kinkCol=isLight?'rgba(17,64,38,0.65)':'rgba(45,212,191,0.55)';
+  ctx.beginPath();ctx.moveTo(toX(0),toY(payoffs[0]));
+  for(let i=1;i<=100;i++)ctx.lineTo(toX(i),toY(payoffs[i]));
+  ctx.strokeStyle=kinkCol;ctx.lineWidth=1.6;ctx.setLineDash([]);ctx.lineJoin='round';ctx.stroke();
+
+  /* ── payoff kink label ── */
+  ctx.fillStyle=kinkCol;ctx.font='8px Geist Mono,monospace';ctx.fillText('payoff at expiry',W-98,H-5);
+
+  /* ── S label ── */
+  const dimLabel=isLight?'rgba(0,0,0,0.28)':'rgba(255,255,255,0.2)';
+  ctx.fillStyle=dimLabel;ctx.font='8.5px Geist Mono,monospace';ctx.fillText('S →',4,H-5);
+}
+['inp-s','inp-k','inp-r','inp-v','inp-t'].forEach(id=>document.getElementById(id).addEventListener('input',price));
+window.addEventListener('load',price);
+window.addEventListener('resize',price,{passive:true});
+</script>
+</body>
+</html>

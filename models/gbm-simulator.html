@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GBM Path Simulator — Aakash Agarwal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')</script>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.proj-page{max-width:1080px;margin:0 auto;padding:0 44px}
+.proj-hd{padding:48px 0 32px;border-bottom:1px solid var(--rule)}
+.proj-eye{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.proj-title{font-family:var(--serif);font-size:clamp(24px,3vw,34px);font-weight:500;color:var(--bright);letter-spacing:-.01em;margin-bottom:10px;line-height:1.15}
+.proj-desc{font-size:14px;color:var(--dim);line-height:1.8;max-width:680px;font-weight:300}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule2);border:1px solid var(--rule2);margin:24px 0}
+.stat{background:var(--bg2);padding:16px 18px}
+.stat-lbl{font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.stat-val{font-family:var(--serif);font-size:24px;font-weight:500;color:var(--bright);line-height:1}
+.stat-sub{font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:2px}
+.sim-wrap{display:grid;grid-template-columns:1fr 240px;gap:0;border:1px solid var(--rule2);margin-bottom:24px;overflow:hidden}
+.sim-area{background:var(--bg2);position:relative}
+#sim-canvas{display:block;width:100%;height:380px}
+.sim-lbl{position:absolute;top:12px;left:14px;font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.controls{padding:22px 18px;display:flex;flex-direction:column;gap:18px;background:var(--bg3);border-left:1px solid var(--rule2)}
+.ctrl-lbl{font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;justify-content:space-between}
+.ctrl-val{color:var(--accent)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--rule2);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:13px;height:13px;background:var(--accent);cursor:pointer;border-radius:0;border:2px solid var(--bg3)}
+input[type=range]::-moz-range-thumb{width:13px;height:13px;background:var(--accent);cursor:pointer;border-radius:0;border:2px solid var(--bg3)}
+.run-btn{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:10px 0;background:var(--accent);color:var(--bg);border:none;cursor:pointer;width:100%;transition:opacity .15s;margin-top:4px}
+.run-btn:hover{opacity:.85}
+.theory-link{padding:18px 22px;background:var(--bg2);border:1px solid var(--rule2);display:flex;align-items:center;justify-content:space-between;text-decoration:none;transition:all .2s;margin-bottom:44px}
+.theory-link:hover{background:var(--bg3);border-color:var(--accent-bd)}
+.tl-lbl{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.tl-title{font-family:var(--serif);font-size:16px;font-weight:500;color:var(--bright)}
+.tl-arr{font-family:var(--mono);font-size:10px;color:var(--muted);flex-shrink:0;margin-left:20px;transition:color .2s}
+.theory-link:hover .tl-arr{color:var(--accent)}
+@media(max-width:700px){.sim-wrap{grid-template-columns:1fr}.controls{border-left:none;border-top:1px solid var(--rule2)}.stats-grid{grid-template-columns:1fr 1fr}.proj-page{padding:0 24px}}
+</style>
+</head>
+<body>
+<nav class="nav-spoke">
+  <a href="../index.html#models" class="nav-back">← Interactive Models</a>
+  <div class="nav-right-spoke">
+    
+    <a href="../index.html" class="nav-brand-spoke">Aakash Agarwal</a>
+  </div>
+</nav>
+
+<div class="proj-page">
+  <header class="proj-hd">
+    <div class="proj-eye">Interactive Model · GBM Simulator</div>
+    <h1 class="proj-title">GBM Path Simulator</h1>
+    <p class="proj-desc">Geometric Brownian Motion running live in the browser via HTML5 Canvas. Adjust drift μ, volatility σ, and horizon T — the ensemble of paths redraws instantly. Observe how σ fans the distribution, how μ tilts it, how N paths reveal the probability cone.</p>
+  </header>
+
+  <div class="stats-grid">
+    <div class="stat"><div class="stat-lbl">Mean final price</div><div class="stat-val" id="st-mean">—</div><div class="stat-sub">E[S_T] across paths</div></div>
+    <div class="stat"><div class="stat-lbl">Std deviation</div><div class="stat-val" id="st-std">—</div><div class="stat-sub">at horizon T</div></div>
+    <div class="stat"><div class="stat-lbl">5th percentile</div><div class="stat-val" id="st-p5">—</div><div class="stat-sub">downside bound</div></div>
+    <div class="stat"><div class="stat-lbl">95th percentile</div><div class="stat-val" id="st-p95">—</div><div class="stat-sub">upside bound</div></div>
+  </div>
+
+  <div class="sim-wrap">
+    <div class="sim-area">
+      <div class="sim-lbl">GBM · Monte Carlo ensemble</div>
+      <canvas id="sim-canvas"></canvas>
+    </div>
+    <div class="controls">
+      <div><div class="ctrl-lbl">Initial price S₀ <span class="ctrl-val" id="v-s0">100</span></div><input type="range" id="r-s0" min="10" max="500" value="100" step="1"></div>
+      <div><div class="ctrl-lbl">Drift μ (annual) <span class="ctrl-val" id="v-mu">0.08</span></div><input type="range" id="r-mu" min="-0.3" max="0.5" value="0.08" step="0.01"></div>
+      <div><div class="ctrl-lbl">Volatility σ <span class="ctrl-val" id="v-sig">0.20</span></div><input type="range" id="r-sig" min="0.01" max="0.8" value="0.20" step="0.01"></div>
+      <div><div class="ctrl-lbl">Horizon T (years) <span class="ctrl-val" id="v-t">1.0</span></div><input type="range" id="r-t" min="0.1" max="5" value="1.0" step="0.1"></div>
+      <div><div class="ctrl-lbl">Paths N <span class="ctrl-val" id="v-n">60</span></div><input type="range" id="r-n" min="10" max="200" value="60" step="5"></div>
+      <button class="run-btn" onclick="runSim()">▶ Run simulation</button>
+    </div>
+  </div>
+
+  <a href="../research/gbm-foundation.html" class="theory-link">
+    <div><div class="tl-lbl">Read the theory behind this model</div><div class="tl-title">Geometric Brownian Motion and the Itô Correction — Two Routes to Black-Scholes</div></div>
+    <span class="tl-arr">Read article →</span>
+  </a>
+
+  <div class="related"><div class="rel-lbl">See also</div><div class="rel-links"><a href="../publications/gbm-framework.html" class="rel-link">GBM Publication ↗</a><a href="bs-pricer.html" class="rel-link">BS Pricer →</a><a href="../research/gbm-foundation.html" class="rel-link">Research article →</a></div></div>
+
+  <footer class="foot"><div class="fi"><div class="fn">Aakash Agarwal<span>Quantitative Finance · 2025</span></div><div class="fl"><a href="https://github.com/aakashagarwal778" target="_blank">GitHub</a><a href="https://www.linkedin.com/in/aakash11agarwal/" target="_blank">LinkedIn</a></div></div></footer>
+</div>
+
+<button class="btn-float" id="theme-float" onclick="toggleTheme()"></button>
+
+<script>
+function toggleTheme(){const h=document.documentElement;const l=h.getAttribute('data-theme')==='light';l?h.removeAttribute('data-theme'):h.setAttribute('data-theme','light');localStorage.setItem('theme',l?'dark':'light');updateThemeBtn();runSim()}
+function updateThemeBtn(){const btn=document.getElementById('theme-float');if(!btn)return;const isLight=document.documentElement.getAttribute('data-theme')==='light';btn.textContent=isLight?'◑ Dark':'☀ Light';}
+window.addEventListener('DOMContentLoaded',updateThemeBtn);
+const sl={s0:{el:document.getElementById('r-s0'),out:document.getElementById('v-s0'),fmt:v=>v},mu:{el:document.getElementById('r-mu'),out:document.getElementById('v-mu'),fmt:v=>parseFloat(v).toFixed(2)},sig:{el:document.getElementById('r-sig'),out:document.getElementById('v-sig'),fmt:v=>parseFloat(v).toFixed(2)},t:{el:document.getElementById('r-t'),out:document.getElementById('v-t'),fmt:v=>parseFloat(v).toFixed(1)},n:{el:document.getElementById('r-n'),out:document.getElementById('v-n'),fmt:v=>v}};
+Object.values(sl).forEach(s=>s.el.addEventListener('input',()=>{s.out.textContent=s.fmt(s.el.value);runSim()}));
+function getP(){return{S0:parseFloat(sl.s0.el.value),mu:parseFloat(sl.mu.el.value),sig:parseFloat(sl.sig.el.value),T:parseFloat(sl.t.el.value),N:parseInt(sl.n.el.value)}}
+function bm(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+function gbm(S0,mu,sig,T,steps){const dt=T/steps;const p=[S0];for(let i=0;i<steps;i++){const l=p[p.length-1];p.push(l*Math.exp((mu-.5*sig*sig)*dt+sig*Math.sqrt(dt)*bm()))}return p}
+let lastPaths=[];
+function runSim(){
+  const p=getP();const steps=130;lastPaths=[];
+  for(let i=0;i<p.N;i++)lastPaths.push(gbm(p.S0,p.mu,p.sig,p.T,steps));
+  draw(lastPaths);updateStats(lastPaths);
+}
+function draw(paths){
+  const c=document.getElementById('sim-canvas');const W=c.offsetWidth,H=c.offsetHeight||380;c.width=W;c.height=H;
+  const ctx=c.getContext('2d');const isLight=document.documentElement.getAttribute('data-theme')==='light';
+  ctx.fillStyle=isLight?'#F2F0EB':'#0F0F0F';ctx.fillRect(0,0,W,H);
+  const gc=isLight?'rgba(0,0,0,0.06)':'rgba(255,255,255,0.04)';
+  ctx.strokeStyle=gc;ctx.lineWidth=0.7;
+  for(let i=1;i<5;i++){ctx.beginPath();ctx.moveTo(0,H*i/5);ctx.lineTo(W,H*i/5);ctx.stroke()}
+  if(!paths.length)return;
+  let mn=Infinity,mx=-Infinity;paths.forEach(p=>p.forEach(v=>{mn=Math.min(mn,v);mx=Math.max(mx,v)}));
+  const pad=(mx-mn)*0.08;const lo=mn-pad,hi=mx+pad;
+  const toY=v=>H-(v-lo)/(hi-lo)*H*0.88-H*0.06;
+  const steps=paths[0].length-1;const toX=i=>i/steps*W;
+  const ac=isLight?'rgba(15,41,66,0.88)':'rgba(184,122,91,0.88)';
+  paths.forEach((path,idx)=>{
+    ctx.beginPath();ctx.moveTo(toX(0),toY(path[0]));
+    for(let i=1;i<path.length;i++)ctx.lineTo(toX(i),toY(path[i]));
+    ctx.strokeStyle=idx===0?ac:(isLight?'rgba(0,0,0,0.12)':'rgba(255,255,255,0.13)');
+    ctx.lineWidth=idx===0?2:0.8;ctx.lineJoin='round';ctx.stroke();
+  });
+  ctx.fillStyle=isLight?'rgba(0,0,0,0.25)':'rgba(255,255,255,0.2)';ctx.font='9px Geist Mono,monospace';
+  ctx.fillText('S',5,15);ctx.fillText('t →',W-24,H-5);
+}
+function updateStats(paths){
+  const finals=paths.map(p=>p[p.length-1]).sort((a,b)=>a-b);
+  const mean=(finals.reduce((a,b)=>a+b)/finals.length).toFixed(1);
+  const std=Math.sqrt(finals.reduce((a,b)=>a+(b-mean)**2,0)/finals.length).toFixed(1);
+  document.getElementById('st-mean').textContent=mean;
+  document.getElementById('st-std').textContent=std;
+  document.getElementById('st-p5').textContent=finals[Math.floor(finals.length*.05)].toFixed(1);
+  document.getElementById('st-p95').textContent=finals[Math.floor(finals.length*.95)].toFixed(1);
+}
+window.addEventListener('load',runSim);
+window.addEventListener('resize',()=>{if(lastPaths.length)draw(lastPaths)},{passive:true});
+</script>
+</body>
+</html>

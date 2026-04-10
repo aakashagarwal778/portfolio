@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GBM and the Itô Correction — Aakash Agarwal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')</script>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body>
+<nav class="nav-spoke">
+  <a href="../index.html#research" class="nav-back">← Research</a>
+  <div class="nav-right-spoke">
+    
+    <a href="../index.html" class="nav-brand-spoke">Aakash Agarwal</a>
+  </div>
+</nav>
+
+<div class="spoke-page">
+  <header class="art-hd">
+    <div class="art-eye">Research · Technical Note · Math Finance Series 01</div>
+    <h1 class="art-title">Geometric Brownian Motion and the Itô Correction — Two Routes to Black-Scholes</h1>
+    <div class="art-meta">
+      <span>Series: Math Finance 01</span>
+      <span>PDF + Jupyter notebook</span>
+      <span>Repo: stochastic-finance</span>
+      <span>2024</span>
+    </div>
+    <p class="art-lede">Asset prices are multiplicative, not additive. The log transformation converts that structure to something tractable — and in doing so, forces a correction term that has no analogue in ordinary calculus. That correction is where Black-Scholes actually comes from, and this piece derives it in full from first principles via both available routes.</p>
+  </header>
+
+  <article class="art-body">
+    <h2>Why prices are multiplicative</h2>
+    <p>A stock moving from $100 to $110 and back to $100 requires a +10% move followed by a −9.09% move — not −10%. The underlying arithmetic is multiplicative: each period's price is the previous period's price scaled by a growth factor. This creates two problems for direct analysis: the distribution of a product of random variables has no simple closed form, and prices bounded below by zero cannot be placed on a symmetric normal distribution.</p>
+    <p>The log transformation resolves both: \(\log S_n = \log S_0 + \sum \log R_i\) converts the product into a sum, and by the Central Limit Theorem a sum of independent increments converges to a normal distribution. Log-price is normally distributed; price is log-normally distributed. These are the same statement in two different spaces.</p>
+
+    <h2>The SDE and the Itô correction</h2>
+    <p>The GBM SDE in price-space is nonlinear in \(S\): \(dS = \mu S\,dt + \sigma S\,dW\). To solve it, we apply Itô's Lemma to \(f(S) = \log S\). The key step is the quadratic variation term — \((dS)^2 = \sigma^2 S^2\,dt\) — which has no counterpart in ordinary calculus, where second-order terms vanish.</p>
+
+    <div class="eq-box">
+      <div class="eq-lbl">Itô's Lemma applied to log S</div>
+      <div class="eq-content">\[ d(\log S) = \frac{1}{S}\,dS - \frac{1}{2S^2}\cdot\sigma^2 S^2\,dt = \left(\mu - \frac{\sigma^2}{2}\right)dt + \sigma\,dW \]</div>
+    </div>
+
+    <p>The \(-\frac{1}{2}\sigma^2\) term is the Itô correction. It arises from the curvature of the log function and the non-zero quadratic variation of Brownian motion. Without it, the expected value of \(S_T\) under continuous compounding would be inflated by the convexity of the exponential — Jensen's inequality made explicit. With it, both coefficients are constants and the SDE integrates directly:</p>
+
+    <div class="eq-box">
+      <div class="eq-lbl">GBM — Closed-Form Solution</div>
+      <div class="eq-content">\[ S_T = S_0 \exp\!\left[\left(\mu - \tfrac{1}{2}\sigma^2\right)T + \sigma W_T\right] \]</div>
+    </div>
+
+    <h2>Two routes, one answer</h2>
+    <p>Every derivative pricing problem has two routes to the same formula. For a European call on GBM:</p>
+    <p><strong>Expectation route.</strong> Switch to the risk-neutral measure \(\mathbb{Q}\) via Girsanov's theorem (replace \(\mu\) with \(r\)). The no-arbitrage price is \(e^{-rT}\mathbb{E}^{\mathbb{Q}}[\max(S_T - K, 0)]\). Evaluated analytically using the log-normal distribution of \(S_T^{\mathbb{Q}}\), this yields the Black-Scholes formula.</p>
+    <p><strong>PDE route.</strong> Apply Itô's Lemma to \(V(S,t)\), construct a delta-hedged portfolio to eliminate the \(dW\) term, and impose no-arbitrage. The result is the Black-Scholes PDE:</p>
+
+    <div class="eq-box">
+      <div class="eq-lbl">Black-Scholes PDE</div>
+      <div class="eq-content">\[ \frac{\partial V}{\partial t} + rS\frac{\partial V}{\partial S} + \frac{1}{2}\sigma^2 S^2\frac{\partial^2 V}{\partial S^2} - rV = 0 \]</div>
+    </div>
+
+    <p>Note that \(\mu\) has vanished — the physical drift of the underlying is irrelevant to option pricing. The PDE maps to the classical heat equation, whose solution under European call boundary conditions reproduces exactly the same Black-Scholes formula derived via the expectation route. Both routes agree because they are the same mathematical statement expressed differently. Which one to use in practice depends entirely on tractability: for vanilla European payoffs both are clean; for path-dependent payoffs the PDE route handles boundary conditions naturally while the expectation route requires full path simulation.</p>
+
+    <div class="callout">
+      <p><strong>Two routes, one answer</strong> is a general principle that extends beyond GBM. For any derivative written on any stochastic underlying, there is always an expectation route and a PDE route — and they always agree. Tractability determines the choice. This principle is carried explicitly through every subsequent document in this series.</p>
+    </div>
+
+    <hr class="art-hr">
+    <div class="exit-links">
+      <a href="../docs/gbm-framework.pdf" target="_blank" class="exit-btn fill">Read full derivation (PDF) ↗</a>
+      <a href="https://github.com/aakashagarwal778/stochastic-finance/tree/main/01_gbm" target="_blank" class="exit-btn out">View Jupyter notebook ↗</a>
+      <a href="../models/gbm-simulator.html" class="exit-btn out">Open GBM simulator →</a>
+    </div>
+  </article>
+
+  <div class="related">
+    <div class="rel-lbl">Linked</div>
+    <div class="rel-links">
+      <a href="../publications/gbm-framework.html" class="rel-link">Publication ↗</a>
+      <a href="../models/gbm-simulator.html" class="rel-link">GBM Simulator →</a>
+      <a href="../models/bs-pricer.html" class="rel-link">BS Pricer →</a>
+      <a href="ou-foundation.html" class="rel-link">OU Foundation →</a>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <div class="fi">
+      <div class="fn">Aakash Agarwal<span>Quantitative Finance · 2025</span></div>
+      <div class="fl"><a href="https://github.com/aakashagarwal778" target="_blank">GitHub</a><a href="https://www.linkedin.com/in/aakash11agarwal/" target="_blank">LinkedIn</a></div>
+    </div>
+  </footer>
+</div>
+
+<button class="btn-float" id="theme-float" onclick="toggleTheme()"></button>
+<script>function toggleTheme(){const h=document.documentElement;const l=h.getAttribute('data-theme')==='light';l?h.removeAttribute('data-theme'):h.setAttribute('data-theme','light');localStorage.setItem('theme',l?'dark':'light');updateThemeBtn();}
+function updateThemeBtn(){const btn=document.getElementById('theme-float');if(!btn)return;const isLight=document.documentElement.getAttribute('data-theme')==='light';btn.textContent=isLight?'◑ Dark':'☀ Light';}
+window.addEventListener('DOMContentLoaded',updateThemeBtn);</script>
+</body>
+</html>

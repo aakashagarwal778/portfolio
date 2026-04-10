@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GBM and Derivative Pricing: A Theoretical Foundation — Aakash Agarwal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')</script>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body>
+<nav class="nav-spoke">
+  <a href="../index.html#publications" class="nav-back">← Publications</a>
+  <div class="nav-right-spoke">
+    
+    <a href="../index.html" class="nav-brand-spoke">Aakash Agarwal</a>
+  </div>
+</nav>
+
+<div class="spoke-page">
+  <header class="art-hd">
+    <div class="art-eye">Publication · Technical Note · Math Finance Series 01</div>
+    <h1 class="art-title">Geometric Brownian Motion and Derivative Pricing: A Theoretical Foundation</h1>
+    <div class="art-meta">
+      <span>Math Finance Series · Document 01</span>
+      <span>LaTeX PDF · Jupyter notebook</span>
+      <span>Repo: stochastic-finance</span>
+      <span>2024</span>
+    </div>
+    <div class="exit-links" style="padding-top:0;margin-bottom:32px">
+      <a href="../docs/gbm-framework.pdf" target="_blank" class="exit-btn fill">Download PDF ↗</a>
+      <a href="https://github.com/aakashagarwal778/stochastic-finance/tree/main/01_gbm" target="_blank" class="exit-btn out">View notebook ↗</a>
+      <a href="../models/gbm-simulator.html" class="exit-btn out">Open GBM simulator →</a>
+    </div>
+  </header>
+
+  <div class="art-body">
+    <div class="pub-snap-lbl">Snapshot</div>
+    <p style="font-size:15px;color:var(--dim);line-height:1.88;font-weight:300;margin-bottom:20px">A complete first-principles derivation of Geometric Brownian Motion — from the multiplicative structure of asset prices through the log-normal distribution, Itô's Lemma, and both the expectation and PDE routes to the Black-Scholes formula. Every step shown explicitly with no hand-waving. Paired with an executable Jupyter notebook demonstrating the two-routes principle numerically. Concludes with a survey of GBM extensions: OU, CIR, Heston, Merton jump-diffusion, and regime-switching.</p>
+
+    <div class="pub-result">
+      <div class="pub-rl">Central result</div>
+      <div class="pub-rv">\(S_T = S_0\exp\!\bigl[(\mu - \tfrac{1}{2}\sigma^2)T + \sigma W_T\bigr]\)</div>
+      <div class="pub-rs">The −½σ² correction is where GBM and naïve calculus diverge — Jensen's inequality made explicit.</div>
+    </div>
+
+    <div class="pub-result">
+      <div class="pub-rl">Black-Scholes formula (both routes)</div>
+      <div class="pub-rv">\(C = SN(d_1) - Ke^{-rT}N(d_2)\)</div>
+      <div class="pub-rs">Derived via expectation route (risk-neutral measure) and PDE route (heat equation). Same answer.</div>
+    </div>
+
+    <div class="pub-chapters">
+      <div class="pub-ch"><div class="pub-ch-n">§1</div><div class="pub-ch-t">Log-price and the log-normal distribution — why prices are multiplicative</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§2</div><div class="pub-ch-t">Linearisation via logarithm — the compounding problem and why it matters for SDEs</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§3</div><div class="pub-ch-t">GBM formulation — discrete hypothesis, continuous limit, parameter interpretation</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§4</div><div class="pub-ch-t">SDE solution via Itô's Lemma — the Itô correction and European option pricing</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§5</div><div class="pub-ch-t">The Black-Scholes PDE — hedge portfolio, no-arbitrage, heat equation solution</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§6</div><div class="pub-ch-t">Other SDEs — OU, CIR, Heston, Merton jump-diffusion, regime-switching survey</div></div>
+    </div>
+  </div>
+
+  <div class="related">
+    <div class="rel-lbl">Linked</div>
+    <div class="rel-links">
+      <a href="../research/gbm-foundation.html" class="rel-link">Research article →</a>
+      <a href="../models/gbm-simulator.html" class="rel-link">GBM Simulator →</a>
+      <a href="../models/bs-pricer.html" class="rel-link">BS Pricer →</a>
+      <a href="ou-framework.html" class="rel-link">OU Publication →</a>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <div class="fi">
+      <div class="fn">Aakash Agarwal<span>Quantitative Finance · 2025</span></div>
+      <div class="fl"><a href="https://github.com/aakashagarwal778" target="_blank">GitHub</a><a href="https://www.linkedin.com/in/aakash11agarwal/" target="_blank">LinkedIn</a></div>
+    </div>
+  </footer>
+</div>
+
+<button class="btn-float" id="theme-float" onclick="toggleTheme()"></button>
+<script>function toggleTheme(){const h=document.documentElement;const l=h.getAttribute('data-theme')==='light';l?h.removeAttribute('data-theme'):h.setAttribute('data-theme','light');localStorage.setItem('theme',l?'dark':'light');updateThemeBtn();}
+function updateThemeBtn(){const btn=document.getElementById('theme-float');if(!btn)return;const isLight=document.documentElement.getAttribute('data-theme')==='light';btn.textContent=isLight?'◑ Dark':'☀ Light';}
+window.addEventListener('DOMContentLoaded',updateThemeBtn);</script>
+</body>
+</html>
