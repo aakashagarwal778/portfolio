@@ -48,7 +48,7 @@
   <div class="idx-grid">
 
     <a href="gbm-simulator.html" class="idx-card">
-      <div class="idx-preview"><span class="idx-preview-label">GBM path ensemble</span></div>
+      <div class="idx-preview"><canvas id="idx-gbm" style="width:100%;height:90px;display:block"></canvas></div>
       <div class="idx-body">
         <div class="idx-name">GBM Path Simulator</div>
         <div class="idx-desc">Multi-path Geometric Brownian Motion in the browser. Adjust μ, σ, and T to redraw the full ensemble instantly.</div>
@@ -57,7 +57,7 @@
     </a>
 
     <a href="ou-explorer.html" class="idx-card">
-      <div class="idx-preview"><span class="idx-preview-label">OU corridor</span></div>
+      <div class="idx-preview"><canvas id="idx-ou" style="width:100%;height:90px;display:block"></canvas></div>
       <div class="idx-body">
         <div class="idx-name">OU Mean-Reversion Explorer</div>
         <div class="idx-desc">Path oscillates within the stationary ±σ/√2κ corridor. Half-life updates live as you adjust κ.</div>
@@ -75,7 +75,7 @@
     </a>
 
     <a href="bs-pricer.html" class="idx-card">
-      <div class="idx-preview"><span class="idx-preview-label">BS pricing curve</span></div>
+      <div class="idx-preview"><canvas id="idx-bs" style="width:100%;height:90px;display:block"></canvas></div>
       <div class="idx-body">
         <div class="idx-name">Black-Scholes Pricing Engine</div>
         <div class="idx-desc">Full analytical pricer with Greeks. Payoff at expiry shown alongside BS value — time value gap visible.</div>
@@ -84,7 +84,7 @@
     </a>
 
     <a href="jump-diffusion.html" class="idx-card">
-      <div class="idx-preview"><span class="idx-preview-label">Return distribution</span></div>
+      <div class="idx-preview"><canvas id="idx-jd" style="width:100%;height:90px;display:block"></canvas></div>
       <div class="idx-body">
         <div class="idx-name">Brent Crude Jump-Diffusion</div>
         <div class="idx-desc">Return distribution building in real time. Fat tails form as Poisson jump events arrive. Calibrated OPEC+ model parameters.</div>
@@ -113,6 +113,165 @@
 function toggleTheme(){const h=document.documentElement;const l=h.getAttribute('data-theme')==='light';l?h.removeAttribute('data-theme'):h.setAttribute('data-theme','light');localStorage.setItem('theme',l?'dark':'light');updateThemeBtn();}
 function updateThemeBtn(){const btn=document.getElementById('theme-float');if(!btn)return;const isLight=document.documentElement.getAttribute('data-theme')==='light';btn.textContent=isLight?'◑ Dark':'☀ Light';}
 window.addEventListener('DOMContentLoaded',updateThemeBtn);
+</script>
+
+<script>
+function bm(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+
+function initCanvas(id){
+  const c=document.getElementById(id);if(!c)return null;
+  const W=c.offsetWidth,H=c.offsetHeight||90;
+  c.width=W*devicePixelRatio;c.height=H*devicePixelRatio;
+  c.style.width=W+'px';c.style.height=H+'px';
+  const ctx=c.getContext('2d');ctx.scale(devicePixelRatio,devicePixelRatio);
+  return{c,ctx,W,H};
+}
+
+/* GBM */
+(function(){
+  const r=initCanvas('idx-gbm');if(!r)return;
+  const{ctx,W,H}=r;const N=8;let paths=[],step=0;
+  function init(){paths=[];step=0;for(let i=0;i<N;i++)paths.push([H/2+(i-3.5)*3]);}
+  function draw(){
+    const isLight=document.documentElement.getAttribute('data-theme')==='light';
+    ctx.fillStyle=isLight?'#F2F0EB':'#0F0F0F';ctx.fillRect(0,0,W,H);
+    const ac=isLight?'rgba(15,41,66,0.9)':'rgba(184,122,91,0.9)';
+    for(let i=0;i<N;i++){
+      paths[i].push(Math.max(4,Math.min(H-4,paths[i][paths[i].length-1]+(Math.random()-.47)*4.5)));
+      ctx.beginPath();ctx.moveTo(0,paths[i][0]);
+      for(let j=1;j<paths[i].length;j++)ctx.lineTo(j*2,paths[i][j]);
+      ctx.strokeStyle=i===0?ac:(isLight?'rgba(0,0,0,0.18)':'rgba(255,255,255,0.16)');
+      ctx.lineWidth=i===0?1.8:0.8;ctx.lineJoin='round';ctx.stroke();
+    }
+    step++;if(step*2>W)init();requestAnimationFrame(draw);
+  }
+  init();draw();
+})();
+
+/* OU */
+(function(){
+  const r=initCanvas('idx-ou');if(!r)return;
+  const{ctx,W,H}=r;
+  const theta=H/2,sigma=2,kappa=0.04,bandH=Math.min(sigma/Math.sqrt(2*kappa)*2.2,H*0.35);
+  let x=theta-18,path=[],step=0;
+  function init(){x=theta-18;path=[x];step=0;}
+  function draw(){
+    x=Math.max(6,Math.min(H-6,x+kappa*(theta-x)+sigma*bm()));path.push(x);
+    const isLight=document.documentElement.getAttribute('data-theme')==='light';
+    const ac=isLight?'rgba(15,41,66,0.9)':'rgba(184,122,91,0.9)';
+    const bandCol=isLight?'rgba(122,75,14,':'rgba(184,122,91,';
+    const tealCol=isLight?'rgba(17,64,38,':'rgba(45,212,191,';
+    ctx.fillStyle=isLight?'#F2F0EB':'#0F0F0F';ctx.fillRect(0,0,W,H);
+    ctx.fillStyle=bandCol+'0.07)';ctx.fillRect(0,theta-bandH,W,bandH*2);
+    ctx.setLineDash([3,4]);ctx.strokeStyle=bandCol+'0.25)';ctx.lineWidth=0.7;
+    ctx.beginPath();ctx.moveTo(0,theta-bandH);ctx.lineTo(W,theta-bandH);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(0,theta+bandH);ctx.lineTo(W,theta+bandH);ctx.stroke();
+    ctx.setLineDash([4,3]);ctx.strokeStyle=tealCol+'0.4)';ctx.lineWidth=0.8;
+    ctx.beginPath();ctx.moveTo(0,theta);ctx.lineTo(W,theta);ctx.stroke();ctx.setLineDash([]);
+    ctx.beginPath();ctx.moveTo(0,path[0]);
+    for(let i=1;i<path.length;i++)ctx.lineTo(i*2,path[i]);
+    ctx.strokeStyle=ac;ctx.lineWidth=1.6;ctx.lineJoin='round';ctx.stroke();
+    step++;if(step*2>W)init();requestAnimationFrame(draw);
+  }
+  init();draw();
+})();
+
+/* BS */
+(function(){
+  const r=initCanvas('idx-bs');if(!r)return;
+  const{ctx,W,H}=r;
+  function normCDF(x){return 0.5*(1+Math.tanh(x*0.7071*0.8862));}
+  const K=0.52,rf=0.05,sig=0.20,T=1.0;let t=0;
+  function draw(){
+    const isLight=document.documentElement.getAttribute('data-theme')==='light';
+    ctx.fillStyle=isLight?'#F2F0EB':'#0F0F0F';ctx.fillRect(0,0,W,H);
+    const ac=isLight?'rgba(15,41,66,0.9)':'rgba(184,122,91,0.9)';
+    const S=0.26+0.32*Math.sin(t*0.015),scale=W/0.9,Kpx=K*scale;
+    ctx.setLineDash([2,3]);ctx.strokeStyle=isLight?'rgba(0,0,0,0.2)':'rgba(255,255,255,0.18)';ctx.lineWidth=0.8;
+    ctx.beginPath();ctx.moveTo(Kpx,0);ctx.lineTo(Kpx,H);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=isLight?'rgba(0,0,0,0.3)':'rgba(255,255,255,0.25)';ctx.font='7px Geist Mono,monospace';ctx.fillText('K',Kpx+3,10);
+    ctx.beginPath();
+    for(let px=2;px<=W;px+=2){
+      const s=px/scale;if(s<0.01)continue;
+      const d1=(Math.log(s/K)+(rf+.5*sig*sig)*T)/(sig*Math.sqrt(T));
+      const price=s*normCDF(d1)-K*Math.exp(-rf*T)*normCDF(d1-sig*Math.sqrt(T));
+      const py=H-3-Math.max(0,price)*H*1.3;
+      px===2?ctx.moveTo(px,Math.min(H-2,py)):ctx.lineTo(px,Math.min(H-2,py));
+    }
+    ctx.strokeStyle=ac;ctx.lineWidth=2;ctx.lineJoin='round';ctx.stroke();
+    const sd1=(Math.log(S/K)+(rf+.5*sig*sig)*T)/(sig*Math.sqrt(T));
+    const sp=S*normCDF(sd1)-K*Math.exp(-rf*T)*normCDF(sd1-sig*Math.sqrt(T));
+    ctx.beginPath();ctx.arc(S*scale,Math.max(3,Math.min(H-3,H-3-Math.max(0,sp)*H*1.3)),3,0,Math.PI*2);
+    ctx.fillStyle=ac;ctx.fill();
+    t++;requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* HMM bars */
+(function(){
+  const el=document.getElementById('idx-hmm');if(!el)return;
+  const cols=['rgba(45,212,191,0.65)','rgba(245,158,11,0.65)','rgba(248,113,113,0.65)'];
+  const n=22;
+  for(let i=0;i<n;i++){const b=document.createElement('div');b.style.cssText='width:8px;flex-shrink:0;border-radius:2px 2px 0 0;height:20px;transition:height .35s ease,background .35s ease';el.appendChild(b);}
+  let t=0;
+  function tick(){
+    const bars=el.children;
+    for(let i=0;i<n;i++){
+      const phase=t*0.035+i*0.28;
+      const regime=i<7?0:i<14?1:2;
+      const maxH=regime===2?72:regime===1?50:32;
+      const h=Math.round(10+Math.abs(Math.sin(phase))*maxH);
+      bars[i].style.height=h+'px';bars[i].style.background=cols[regime];
+    }
+    t++;requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+/* Jump-Diffusion histogram */
+(function(){
+  const r=initCanvas('idx-jd');if(!r)return;
+  const{ctx,W,H}=r;
+  const BINS=28,sigma=0.022,lambda=0.009,jumpSig=0.09;
+  const binMin=-0.25,binMax=0.25;
+  let counts=new Array(BINS).fill(0),maxCount=1,total=0,frame=0;
+  function binIdx(v){return Math.max(0,Math.min(BINS-1,Math.floor((v-binMin)/(binMax-binMin)*BINS)));}
+  function addSamples(n){
+    for(let i=0;i<n;i++){
+      const jumped=Math.random()<lambda;
+      const j=jumped?(Math.random()>.5?1:-1)*(jumpSig+Math.random()*jumpSig):0;
+      const v=sigma*bm()+j;const idx=binIdx(v);counts[idx]++;
+      if(counts[idx]>maxCount)maxCount=counts[idx];total++;
+    }
+  }
+  addSamples(800);
+  function draw(){
+    if(frame>500){counts=new Array(BINS).fill(0);maxCount=1;total=0;frame=0;}
+    addSamples(30);frame++;
+    const isLight=document.documentElement.getAttribute('data-theme')==='light';
+    ctx.fillStyle=isLight?'#F2F0EB':'#0F0F0F';ctx.fillRect(0,0,W,H);
+    const pad=6,chartH=H-pad*2,bw=(W-pad*2)/BINS;
+    const normPeak=1/(sigma*2.5066);
+    ctx.beginPath();
+    for(let px=0;px<=W-pad*2;px++){
+      const rv=binMin+(px/(W-pad*2))*(binMax-binMin);
+      const nd=Math.exp(-rv*rv/(2*sigma*sigma))/(sigma*2.5066);
+      const py=pad+chartH-(nd/normPeak)*chartH*0.88;
+      px===0?ctx.moveTo(px+pad,py):ctx.lineTo(px+pad,py);
+    }
+    ctx.strokeStyle=isLight?'rgba(0,0,0,0.18)':'rgba(255,255,255,0.14)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.stroke();ctx.setLineDash([]);
+    for(let i=0;i<BINS;i++){
+      const bh=counts[i]/maxCount*chartH*0.88;
+      const x=pad+i*bw,y=pad+chartH-bh;
+      const isTail=(i<BINS*0.18||i>BINS*0.82);
+      ctx.fillStyle=isLight?(isTail?'rgba(139,32,32,0.55)':'rgba(122,75,14,0.5)'):(isTail?'rgba(210,90,90,0.6)':'rgba(184,122,91,0.52)');
+      ctx.fillRect(x,y,bw-1,bh);
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
 </script>
 </body>
 </html>

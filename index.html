@@ -182,11 +182,6 @@
 <!-- ═══ 03 INTERACTIVE MODELS ═══ -->
 <section id="models">
   <div class="sec-hd"><span class="s-n">03</span><h2 class="s-t">Interactive Models</h2></div>
-  <div class="tabs">
-    <div class="tab active">All</div>
-    <div class="tab">Simulators</div>
-    <div class="tab">Pricers</div>
-  </div>
   <div class="mg">
 
     <a href="models/gbm-simulator.html" class="mc">
@@ -372,10 +367,27 @@ window.addEventListener('DOMContentLoaded',updateThemeBtn);
 
 /* ── NAV ACTIVE ── */
 const secs=document.querySelectorAll('section[id]');
-window.addEventListener('scroll',()=>{
-  let c='';secs.forEach(s=>{if(window.scrollY>=s.offsetTop-80)c=s.id});
-  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+c));
-},{passive:true});
+function updateNavActive(){
+  const scrollY=window.scrollY;
+  let current='';
+  secs.forEach(s=>{if(scrollY>=s.offsetTop-120)current=s.id;});
+  // Only highlight if scrolled past hero (first section starts around 400px)
+  if(scrollY<200)current='';
+  document.querySelectorAll('.nav-links a').forEach(a=>{
+    const href=a.getAttribute('href');
+    // Match section index pages to their hub section IDs
+    const sectionMap={
+      'research/index.html':'research',
+      'publications/index.html':'publications',
+      'models/index.html':'models',
+      '#about':'about'
+    };
+    const matchId=sectionMap[href]||'';
+    a.classList.toggle('active',matchId===current&&current!=='');
+  });
+}
+window.addEventListener('scroll',updateNavActive,{passive:true});
+window.addEventListener('DOMContentLoaded',updateNavActive);
 
 /* ── TABS (research + publications) ── */
 document.querySelectorAll('.tabs').forEach(tabs=>{
