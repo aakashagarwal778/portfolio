@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regime-Conditional Portfolio Allocation — Aakash Agarwal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')</script>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body>
+<nav class="nav-spoke">
+  <a href="../index.html#publications" class="nav-back">← Publications</a>
+  <div class="nav-right-spoke">
+    <a href="../index.html" class="nav-brand-spoke">Aakash Agarwal</a>
+  </div>
+</nav>
+
+<div class="spoke-page">
+  <header class="art-hd">
+    <div class="art-eye">Publication · Paper · Portfolio Construction</div>
+    <h1 class="art-title">Regime-Conditional Portfolio Allocation: A Markov-Switching Decision Tree Framework</h1>
+    <div class="art-meta">
+      <span>17 years out-of-sample · 35 walk-forward folds</span>
+      <span>SPY · EEM · TLT · GLD</span>
+      <span>25 bps transaction costs</span>
+      <span>January 2025</span>
+    </div>
+    <div class="exit-links" style="padding-top:0;margin-bottom:32px">
+      <a href="../docs/msm-dt-framework.pdf" target="_blank" class="exit-btn fill">Download PDF ↗</a>
+      <a href="https://github.com/aakashagarwal778/msm-dt-portfolio" target="_blank" class="exit-btn out">View code on GitHub ↗</a>
+    </div>
+  </header>
+
+  <div class="art-body">
+    <div class="pub-snap-lbl">Abstract</div>
+    <p style="font-size:15px;color:var(--dim);line-height:1.88;font-weight:400;margin-bottom:24px">A systematic, regime-conditional framework for multi-asset portfolio allocation. A three-state Gaussian Hidden Markov Model identifies latent market regimes from a compact feature vector comprising realised volatility, cross-asset correlation, and credit spread. Regime-conditional weights are constructed analytically — Sharpe-maximising mean-variance under Ledoit-Wolf covariance shrinkage for Risk-On, risk parity for Risk-Off, and a GLD/TLT flight-to-quality allocation for Crisis. A Decision Tree learns the continuous mapping from feature space to weights, eliminating the hard switching artefact of discrete regime assignment. Evaluated on 20 years of daily data across four asset classes using a strict walk-forward protocol with 35 out-of-sample folds and 25 basis point transaction costs.</p>
+
+    <div class="pub-result">
+      <div class="pub-rl">Out-of-sample Sharpe — 17 years, 35 folds</div>
+      <div class="pub-rv">0.41 vs 0.29 benchmark</div>
+      <div class="pub-rs">168 bps excess annual return · Positive Sharpe in 23/35 folds · Benchmark-beating in 20/35 folds</div>
+    </div>
+
+    <div class="pub-result">
+      <div class="pub-rl">Regime detection quality</div>
+      <div class="pub-rv">94% · 90% · 88%</div>
+      <div class="pub-rs">Crisis label accuracy: GFC (Sep 2008–Mar 2009) · COVID crash (Feb–Apr 2020) · 2022 rate shock</div>
+    </div>
+
+    <div class="pub-chapters">
+      <div class="pub-ch"><div class="pub-ch-n">§1–2</div><div class="pub-ch-t">Introduction and literature review — Hamilton (1989), Ang-Bekaert (2002), Ledoit-Wolf (2004), Adam-Otting-Michels (2024)</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§3</div><div class="pub-ch-t">Theoretical foundations — HMM, Baum-Welch, Viterbi decoding, Ledoit-Wolf shrinkage, cost-complexity pruning</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§4</div><div class="pub-ch-t">Methodology — data universe, feature engineering, HMM regime detection, regime-conditional weight construction, Decision Tree allocation layer, walk-forward evaluation protocol</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§5</div><div class="pub-ch-t">Results — regime detection quality, out-of-sample performance, regime-conditional Sharpe decomposition, robustness across 35 folds</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§6–7</div><div class="pub-ch-t">Discussion and limitations — value-add from DT layer, Ledoit-Wolf stability, 2022 rate shock failure mode, extensions to TIPS/managed futures</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§8</div><div class="pub-ch-t">Conclusion — methodological contribution, interpretability of DT allocation layer, directions for extension</div></div>
+    </div>
+
+    <div style="margin-top:20px">
+      <div class="pub-snap-lbl">Key parameters</div>
+      <div class="ptab-wrap" style="margin-top:0">
+        <table class="ptab">
+          <thead><tr><th>Component</th><th>Specification</th></tr></thead>
+          <tbody>
+            <tr><td>Regime model</td><td>3-state Gaussian HMM, Baum-Welch + Viterbi, VIX override at 28</td></tr>
+            <tr><td>Feature vector</td><td>SPY 21d return, SPY 21d vol, SPY/TLT 21d correlation, HY OAS spread</td></tr>
+            <tr><td>Risk-On weights</td><td>Sharpe-max MVO, Ledoit-Wolf covariance, 60% single-asset cap</td></tr>
+            <tr><td>Risk-Off weights</td><td>Risk parity, all four assets, Ledoit-Wolf covariance</td></tr>
+            <tr><td>Crisis weights</td><td>Risk parity on GLD + TLT only, zero equity</td></tr>
+            <tr><td>Allocation layer</td><td>Decision Tree regressor, max depth 4, min 20 samples/leaf, α* via TimeSeriesSplit CV</td></tr>
+            <tr><td>Evaluation</td><td>35 expanding walk-forward folds, Oct 2007 – Dec 2024, 25 bps round-trip</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="related">
+    <div class="rel-lbl">Linked</div>
+    <div class="rel-links">
+      <a href="../research/geoeconomic-sde.html" class="rel-link">Geoeconomic SDE →</a>
+      <a href="case01-brent.html" class="rel-link">Case 01: Brent Crude →</a>
+      <a href="ou-framework.html" class="rel-link">OU Technical Note →</a>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <div class="fi">
+      <div class="fn">Aakash Agarwal<span>Quantitative Finance · 2025</span></div>
+      <div class="fl">
+        <a href="https://github.com/aakashagarwal778" target="_blank">GitHub</a>
+        <a href="https://www.linkedin.com/in/aakash11agarwal/" target="_blank">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<button class="btn-float" id="theme-float" onclick="toggleTheme()"></button>
+<script>
+function toggleTheme(){const h=document.documentElement;const l=h.getAttribute('data-theme')==='light';l?h.removeAttribute('data-theme'):h.setAttribute('data-theme','light');localStorage.setItem('theme',l?'dark':'light');updateThemeBtn();}
+function updateThemeBtn(){const btn=document.getElementById('theme-float');if(!btn)return;const isLight=document.documentElement.getAttribute('data-theme')==='light';btn.textContent=isLight?'◑ Dark':'☀ Light';}
+window.addEventListener('DOMContentLoaded',updateThemeBtn);
+</script>
+</body>
+</html>

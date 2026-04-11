@@ -138,6 +138,7 @@ section{border-bottom:1px solid var(--rule2);padding:0 0 32px}
 .b-live{color:var(--teal);border-color:var(--teal-bd);background:var(--teal-dim)}
 .b-lib{color:var(--amber);border-color:var(--amber-bd);background:var(--amber-dim)}
 .b-repo{color:var(--muted);border-color:var(--rule2);background:var(--bg2)}
+.b-method{color:var(--teal);border-color:var(--teal-bd);background:var(--teal-dim)}
 .b-dis{color:var(--red);border-color:var(--red-bd);background:var(--red-dim)}
 .b-case{color:var(--accent);border-color:var(--accent-bd);background:var(--accent-dim)}
 
