@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research — Aakash Agarwal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')</script>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body>
+<nav class="nav-spoke">
+  <a href="../index.html" class="nav-back">← Hub</a>
+  <div class="nav-right-spoke">
+    <ul class="nav-links" style="list-style:none;display:flex;gap:22px">
+      <li><a href="index.html" style="font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--bright);text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:1px">Research</a></li>
+      <li><a href="../publications/index.html" style="font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-decoration:none;transition:color .2s">Publications</a></li>
+      <li><a href="../models/index.html" style="font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-decoration:none;transition:color .2s">Models</a></li>
+      <li><a href="../index.html#about" style="font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-decoration:none;transition:color .2s">About</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="wrap" style="padding-top:0">
+
+  <div style="padding:48px 0 32px;border-bottom:1px solid var(--rule2)">
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">All research</div>
+    <h1 style="font-family:var(--serif);font-size:clamp(28px,3.5vw,40px);font-weight:500;color:var(--bright);letter-spacing:-.01em;margin-bottom:10px;line-height:1.1">Research</h1>
+    <p style="font-size:14px;color:var(--dim);line-height:1.75;max-width:560px;font-weight:400">Articles covering stochastic calculus, derivatives pricing, and applied quantitative frameworks. Each piece is grounded in full mathematical derivations with explicit connections to real implementation.</p>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:12px" id="article-count">3 articles</div>
+  </div>
+
+  <div style="padding:8px 0 0">
+    <div class="tabs">
+      <div class="tab active" data-filter="all">All</div>
+      <div class="tab" data-filter="framework">Frameworks</div>
+      <div class="tab" data-filter="sde">SDEs</div>
+      <div class="tab" data-filter="calibration">Calibration</div>
+    </div>
+
+    <a href="geoeconomic-sde.html" class="row" data-tags="framework sde calibration">
+      <div class="row-n">001</div>
+      <div><span class="badge b-case">Case 01</span></div>
+      <div>
+        <div class="row-title">Geoeconomic Risk as a Stochastic Process — the OPEC+ Case</div>
+        <div class="row-desc">How cartel-enforced price bands produce mean-reverting dynamics that standard GBM cannot capture, and the jump-diffusion SDE built from economic first principles to model them.</div>
+        <div class="row-tags"><span class="tag">Jump-diffusion</span><span class="tag">Brent Crude</span><span class="tag">Mean-reversion</span><span class="tag">Euler-Maruyama</span><span class="tag">MLE</span></div>
+      </div>
+      <div class="row-arr">↗</div>
+    </a>
+
+    <a href="gbm-foundation.html" class="row" data-tags="sde framework">
+      <div class="row-n">002</div>
+      <div><span class="badge b-lib">Derivation</span></div>
+      <div>
+        <div class="row-title">Geometric Brownian Motion and the Itô Correction — Two Routes to Black-Scholes</div>
+        <div class="row-desc">A first-principles derivation of GBM, the role of the −½σ² term, and how the expectation route and the PDE route converge on the same pricing formula.</div>
+        <div class="row-tags"><span class="tag">GBM</span><span class="tag">Itô's Lemma</span><span class="tag">Black-Scholes</span><span class="tag">Feynman-Kac</span></div>
+      </div>
+      <div class="row-arr">↗</div>
+    </a>
+
+    <a href="ou-foundation.html" class="row" data-tags="sde calibration">
+      <div class="row-n">003</div>
+      <div><span class="badge b-lib">Derivation</span></div>
+      <div>
+        <div class="row-title">The Ornstein-Uhlenbeck Process — Stationarity, Calibration, and the Vasicek Application</div>
+        <div class="row-desc">Closed-form solution via integrating factor, stationary distribution from Fokker-Planck, MLE calibration, and bond pricing under the Vasicek term structure model.</div>
+        <div class="row-tags"><span class="tag">OU Process</span><span class="tag">Fokker-Planck</span><span class="tag">Vasicek</span><span class="tag">MLE</span><span class="tag">Stationarity</span></div>
+      </div>
+      <div class="row-arr">↗</div>
+    </a>
+
+    <div style="padding:18px 0;font-family:var(--mono);font-size:10px;color:var(--muted);border-top:1px solid var(--rule)">New articles are added as they are written.</div>
+  </div>
+
+</div>
+
+<footer class="foot" style="margin-top:0">
+  <div class="wrap fi">
+    <div class="fn">Aakash Agarwal<span>Quantitative Finance · 2025</span></div>
+    <div class="fl">
+      <a href="https://github.com/aakashagarwal778" target="_blank">GitHub</a>
+      <a href="https://www.linkedin.com/in/aakash11agarwal/" target="_blank">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<button class="btn-float" id="theme-float" onclick="toggleTheme()"></button>
+<script>
+function toggleTheme(){const h=document.documentElement;const l=h.getAttribute('data-theme')==='light';l?h.removeAttribute('data-theme'):h.setAttribute('data-theme','light');localStorage.setItem('theme',l?'dark':'light');updateThemeBtn();}
+function updateThemeBtn(){const btn=document.getElementById('theme-float');if(!btn)return;const isLight=document.documentElement.getAttribute('data-theme')==='light';btn.textContent=isLight?'◑ Dark':'☀ Light';}
+window.addEventListener('DOMContentLoaded',updateThemeBtn);
+document.querySelectorAll('.tab[data-filter]').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    const f=tab.dataset.filter;
+    document.querySelectorAll('.row[data-tags]').forEach(r=>{
+      r.style.display=(f==='all'||r.dataset.tags.includes(f))?'':'none';
+    });
+  });
+});
+</script>
+</body>
+</html>

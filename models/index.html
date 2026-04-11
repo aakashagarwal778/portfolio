@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Models — Aakash Agarwal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')</script>
+<link rel="stylesheet" href="../shared.css">
+<style>
+.idx-grid{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--rule);border-left:1px solid var(--rule);margin-top:16px}
+.idx-card{border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);cursor:pointer;text-decoration:none;color:inherit;display:block;transition:background .15s}
+.idx-card:hover{background:var(--bg2)}
+.idx-preview{height:90px;background:var(--bg2);border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:background .2s}
+.idx-card:hover .idx-preview{background:var(--bg3)}
+.idx-preview-label{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.idx-body{padding:18px 22px}
+.idx-name{font-family:var(--serif);font-size:17px;font-weight:500;color:var(--bright);margin-bottom:5px;line-height:1.25}
+.idx-desc{font-size:13px;color:var(--dim);line-height:1.6;margin-bottom:12px;font-weight:400}
+.idx-foot{display:flex;align-items:center;justify-content:space-between}
+.idx-meta{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.idx-open{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);border-bottom:1px solid var(--accent-bd);padding-bottom:1px}
+@media(max-width:600px){.idx-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="nav-spoke">
+  <a href="../index.html" class="nav-back">← Hub</a>
+  <div class="nav-right-spoke">
+    <ul class="nav-links" style="list-style:none;display:flex;gap:22px">
+      <li><a href="../research/index.html" style="font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-decoration:none;transition:color .2s">Research</a></li>
+      <li><a href="../publications/index.html" style="font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-decoration:none;transition:color .2s">Publications</a></li>
+      <li><a href="index.html" style="font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--bright);text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:1px">Models</a></li>
+      <li><a href="../index.html#about" style="font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-decoration:none;transition:color .2s">About</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="wrap" style="padding-top:0">
+
+  <div style="padding:48px 0 32px;border-bottom:1px solid var(--rule2)">
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">All interactive models</div>
+    <h1 style="font-family:var(--serif);font-size:clamp(28px,3.5vw,40px);font-weight:500;color:var(--bright);letter-spacing:-.01em;margin-bottom:10px;line-height:1.1">Interactive Models</h1>
+    <p style="font-size:14px;color:var(--dim);line-height:1.75;max-width:560px;font-weight:400">Live applications demonstrating quantitative concepts and tools. Each runs entirely in the browser — no server, no data files.</p>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:12px">5 models</div>
+  </div>
+
+  <div class="idx-grid">
+
+    <a href="gbm-simulator.html" class="idx-card">
+      <div class="idx-preview"><span class="idx-preview-label">GBM path ensemble</span></div>
+      <div class="idx-body">
+        <div class="idx-name">GBM Path Simulator</div>
+        <div class="idx-desc">Multi-path Geometric Brownian Motion in the browser. Adjust μ, σ, and T to redraw the full ensemble instantly.</div>
+        <div class="idx-foot"><span class="idx-meta">Canvas API</span><span class="idx-open">Open →</span></div>
+      </div>
+    </a>
+
+    <a href="ou-explorer.html" class="idx-card">
+      <div class="idx-preview"><span class="idx-preview-label">OU corridor</span></div>
+      <div class="idx-body">
+        <div class="idx-name">OU Mean-Reversion Explorer</div>
+        <div class="idx-desc">Path oscillates within the stationary ±σ/√2κ corridor. Half-life updates live as you adjust κ.</div>
+        <div class="idx-foot"><span class="idx-meta">Euler-Maruyama</span><span class="idx-open">Open →</span></div>
+      </div>
+    </a>
+
+    <a href="hmm-explainer.html" class="idx-card">
+      <div class="idx-preview"><span class="idx-preview-label">HMM forward filtering</span></div>
+      <div class="idx-body">
+        <div class="idx-name">Hidden Markov Model Explainer</div>
+        <div class="idx-desc">Watch the forward algorithm infer hidden states from noisy observations one at a time. Reveal the truth at the end.</div>
+        <div class="idx-foot"><span class="idx-meta">Forward algorithm</span><span class="idx-open">Open →</span></div>
+      </div>
+    </a>
+
+    <a href="bs-pricer.html" class="idx-card">
+      <div class="idx-preview"><span class="idx-preview-label">BS pricing curve</span></div>
+      <div class="idx-body">
+        <div class="idx-name">Black-Scholes Pricing Engine</div>
+        <div class="idx-desc">Full analytical pricer with Greeks. Payoff at expiry shown alongside BS value — time value gap visible.</div>
+        <div class="idx-foot"><span class="idx-meta">Analytical · Full Greeks</span><span class="idx-open">Open →</span></div>
+      </div>
+    </a>
+
+    <a href="jump-diffusion.html" class="idx-card">
+      <div class="idx-preview"><span class="idx-preview-label">Return distribution</span></div>
+      <div class="idx-body">
+        <div class="idx-name">Brent Crude Jump-Diffusion</div>
+        <div class="idx-desc">Return distribution building in real time. Fat tails form as Poisson jump events arrive. Calibrated OPEC+ model parameters.</div>
+        <div class="idx-foot"><span class="idx-meta">Euler-Maruyama · Lee-Mykland</span><span class="idx-open">Open →</span></div>
+      </div>
+    </a>
+
+  </div>
+
+  <div style="padding:18px 0;font-family:var(--mono);font-size:10px;color:var(--muted);border-top:1px solid var(--rule);margin-top:1px">New models are added as they are built.</div>
+
+</div>
+
+<footer class="foot" style="margin-top:0">
+  <div class="wrap fi">
+    <div class="fn">Aakash Agarwal<span>Quantitative Finance · 2025</span></div>
+    <div class="fl">
+      <a href="https://github.com/aakashagarwal778" target="_blank">GitHub</a>
+      <a href="https://www.linkedin.com/in/aakash11agarwal/" target="_blank">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<button class="btn-float" id="theme-float" onclick="toggleTheme()"></button>
+<script>
+function toggleTheme(){const h=document.documentElement;const l=h.getAttribute('data-theme')==='light';l?h.removeAttribute('data-theme'):h.setAttribute('data-theme','light');localStorage.setItem('theme',l?'dark':'light');updateThemeBtn();}
+function updateThemeBtn(){const btn=document.getElementById('theme-float');if(!btn)return;const isLight=document.documentElement.getAttribute('data-theme')==='light';btn.textContent=isLight?'◑ Dark':'☀ Light';}
+window.addEventListener('DOMContentLoaded',updateThemeBtn);
+</script>
+</body>
+</html>

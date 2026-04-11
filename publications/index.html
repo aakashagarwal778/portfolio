@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Publications — Aakash Agarwal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script>if(localStorage.getItem('theme')==='light')document.documentElement.setAttribute('data-theme','light')</script>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body>
+<nav class="nav-spoke">
+  <a href="../index.html" class="nav-back">← Hub</a>
+  <div class="nav-right-spoke">
+    <ul class="nav-links" style="list-style:none;display:flex;gap:22px">
+      <li><a href="../research/index.html" style="font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-decoration:none;transition:color .2s">Research</a></li>
+      <li><a href="index.html" style="font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--bright);text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:1px">Publications</a></li>
+      <li><a href="../models/index.html" style="font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-decoration:none;transition:color .2s">Models</a></li>
+      <li><a href="../index.html#about" style="font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-decoration:none;transition:color .2s">About</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="wrap" style="padding-top:0">
+
+  <div style="padding:48px 0 32px;border-bottom:1px solid var(--rule2)">
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">All publications</div>
+    <h1 style="font-family:var(--serif);font-size:clamp(28px,3.5vw,40px);font-weight:500;color:var(--bright);letter-spacing:-.01em;margin-bottom:10px;line-height:1.1">Publications</h1>
+    <p style="font-size:14px;color:var(--dim);line-height:1.75;max-width:560px;font-weight:400">Technical notes, case studies, and papers. Each document is self-authored and self-published — full derivations, calibrated implementations, and empirical validation throughout.</p>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:12px">4 publications</div>
+  </div>
+
+  <div style="padding:8px 0 0">
+    <div class="tabs">
+      <div class="tab active" data-filter="all">All</div>
+      <div class="tab" data-filter="derivation">Technical Notes</div>
+      <div class="tab" data-filter="case">Case Studies</div>
+      <div class="tab" data-filter="methodology">Papers</div>
+    </div>
+
+    <a href="case01-brent.html" class="pub-row" data-tags="case">
+      <div class="row-n">001</div>
+      <div><span class="badge b-case">Case Study</span></div>
+      <div>
+        <div class="row-title">Brent Crude Under OPEC+ Band Enforcement: A Jump-Diffusion SDE Approach</div>
+        <div class="row-desc" style="font-family:var(--mono);font-size:10px;color:var(--muted)">Geoeconomic SDE Project · Case 01 · Euler-Maruyama · MLE calibration · 4,648 observations</div>
+      </div>
+      <div class="pub-year">2025 ↗</div>
+    </a>
+
+    <a href="gbm-framework.html" class="pub-row" data-tags="derivation">
+      <div class="row-n">002</div>
+      <div><span class="badge b-lib">Technical Note</span></div>
+      <div>
+        <div class="row-title">Geometric Brownian Motion and Derivative Pricing: A Theoretical Foundation</div>
+        <div class="row-desc" style="font-family:var(--mono);font-size:10px;color:var(--muted)">Math Finance Series · LaTeX PDF · Jupyter notebook · Full derivation</div>
+      </div>
+      <div class="pub-year">2024 ↗</div>
+    </a>
+
+    <a href="ou-framework.html" class="pub-row" data-tags="derivation">
+      <div class="row-n">003</div>
+      <div><span class="badge b-lib">Technical Note</span></div>
+      <div>
+        <div class="row-title">Ornstein-Uhlenbeck Process and Mean-Reversion: A Theoretical Foundation</div>
+        <div class="row-desc" style="font-family:var(--mono);font-size:10px;color:var(--muted)">Math Finance Series · LaTeX PDF · Jupyter notebook · Full derivation</div>
+      </div>
+      <div class="pub-year">2024 ↗</div>
+    </a>
+
+    <a href="msm-dt.html" class="pub-row" data-tags="methodology">
+      <div class="row-n">004</div>
+      <div><span class="badge b-method">Paper</span></div>
+      <div>
+        <div class="row-title">Regime-Conditional Portfolio Allocation: A Markov-Switching Decision Tree Framework</div>
+        <div class="row-desc" style="font-family:var(--mono);font-size:10px;color:var(--muted)">HMM · Ledoit-Wolf · Decision Tree · 35-fold walk-forward · 17 years OOS</div>
+      </div>
+      <div class="pub-year">2025 ↗</div>
+    </a>
+
+    <div style="padding:18px 0;font-family:var(--mono);font-size:10px;color:var(--muted);border-top:1px solid var(--rule)">New publications are added as they are completed.</div>
+  </div>
+
+</div>
+
+<footer class="foot" style="margin-top:0">
+  <div class="wrap fi">
+    <div class="fn">Aakash Agarwal<span>Quantitative Finance · 2025</span></div>
+    <div class="fl">
+      <a href="https://github.com/aakashagarwal778" target="_blank">GitHub</a>
+      <a href="https://www.linkedin.com/in/aakash11agarwal/" target="_blank">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<button class="btn-float" id="theme-float" onclick="toggleTheme()"></button>
+<script>
+function toggleTheme(){const h=document.documentElement;const l=h.getAttribute('data-theme')==='light';l?h.removeAttribute('data-theme'):h.setAttribute('data-theme','light');localStorage.setItem('theme',l?'dark':'light');updateThemeBtn();}
+function updateThemeBtn(){const btn=document.getElementById('theme-float');if(!btn)return;const isLight=document.documentElement.getAttribute('data-theme')==='light';btn.textContent=isLight?'◑ Dark':'☀ Light';}
+window.addEventListener('DOMContentLoaded',updateThemeBtn);
+document.querySelectorAll('.tab[data-filter]').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    const f=tab.dataset.filter;
+    document.querySelectorAll('.pub-row[data-tags]').forEach(r=>{
+      r.style.display=(f==='all'||r.dataset.tags.includes(f))?'':'none';
+    });
+  });
+});
+</script>
+</body>
+</html>

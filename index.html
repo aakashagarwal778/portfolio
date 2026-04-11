@@ -36,9 +36,9 @@
     </div>
   </a>
   <ul class="nav-links">
-    <li><a href="#research">Research</a></li>
-    <li><a href="#publications">Publications</a></li>
-    <li><a href="#models">Interactive Models</a></li>
+    <li><a href="research/index.html">Research</a></li>
+    <li><a href="publications/index.html">Publications</a></li>
+    <li><a href="models/index.html">Interactive Models</a></li>
     <li><a href="#about">About</a></li>
   </ul>
 </nav>
@@ -118,6 +118,10 @@
     </div>
     <div class="row-arr">↗</div>
   </a>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 0 0;border-top:1px solid var(--rule)">
+    <a href="research/index.html" class="view-all-link">View all research →</a>
+    <span class="view-all-count">3 articles</span>
+  </div>
 </section>
 
 <!-- ═══ 02 PUBLICATIONS ═══ -->
@@ -169,6 +173,10 @@
     </div>
     <div class="pub-year">2025 ↗</div>
   </a>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 0 0;border-top:1px solid var(--rule)">
+    <a href="publications/index.html" class="view-all-link">View all publications →</a>
+    <span class="view-all-count">4 publications</span>
+  </div>
 </section>
 
 <!-- ═══ 03 INTERACTIVE MODELS ═══ -->
@@ -199,15 +207,6 @@
       </div>
     </a>
 
-    <a href="models/jump-diffusion.html" class="mc">
-      <div class="mv"><canvas id="cv-jd" width="500" height="115" style="width:100%;height:115px"></canvas></div>
-      <div class="mb">
-        <div class="mn">Brent Crude Jump-Diffusion</div>
-        <div class="md">Return distribution building in real time. Fat tails form as Poisson jump events arrive. The calibrated OPEC+ model running in the browser.</div>
-        <div class="mf"><span class="ms">Euler-Maruyama · Lee-Mykland</span><span class="ml">Open App ↗</span></div>
-      </div>
-    </a>
-
     <a href="models/bs-pricer.html" class="mc">
       <div class="mv"><canvas id="cv-bs" width="500" height="115" style="width:100%;height:115px"></canvas></div>
       <div class="mb">
@@ -217,6 +216,21 @@
       </div>
     </a>
 
+    <a href="models/hmm-explainer.html" class="mc">
+      <div class="mv" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:0 24px">
+        <div id="hmm-preview" style="display:flex;align-items:flex-end;gap:3px;height:60px"></div>
+      </div>
+      <div class="mb">
+        <div class="mn">Hidden Markov Model Explainer</div>
+        <div class="md">Watch the forward algorithm infer hidden states from noisy observations in real time. Step through, then reveal the truth.</div>
+        <div class="mf"><span class="ms">HMM · Forward Filtering</span><span class="ml">Open App ↗</span></div>
+      </div>
+    </a>
+
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 0 0;border-top:1px solid var(--rule)">
+    <a href="models/index.html" class="view-all-link">View all models →</a>
+    <span class="view-all-count">5 models</span>
   </div>
 </section>
 
@@ -552,6 +566,28 @@ function bm(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();retu
     t++;requestAnimationFrame(draw);
   }
   draw();
+})();
+
+
+/* ── HMM PREVIEW ── */
+(function(){
+  const el=document.getElementById('hmm-preview');if(!el)return;
+  const cols=['rgba(45,212,191,0.6)','rgba(245,158,11,0.6)','rgba(248,113,113,0.6)'];
+  const n=18;
+  for(let i=0;i<n;i++){const b=document.createElement('div');b.style.cssText='width:7px;border-radius:2px 2px 0 0;background:'+cols[0]+';height:20px;transition:height .4s ease,background .4s ease';el.appendChild(b);}
+  let t=0;
+  function tick(){
+    const bars=el.children;
+    for(let i=0;i<n;i++){
+      const phase=t*0.04+i*0.3;
+      const regime=i<6?0:i<12?1:2;
+      const h=Math.round(12+Math.abs(Math.sin(phase))*(regime===2?44:regime===1?28:16));
+      bars[i].style.height=h+'px';
+      bars[i].style.background=cols[regime];
+    }
+    t++;requestAnimationFrame(tick);
+  }
+  tick();
 })();
 
 /* ── TERMINAL ── */
