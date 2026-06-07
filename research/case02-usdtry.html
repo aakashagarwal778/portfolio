@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>USD/TRY Under Sanctions Shock — Aakash Agarwal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<script>if(localStorage.getItem('theme')!=='dark')document.documentElement.setAttribute('data-theme','light')</script>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body>
+<nav class="nav-spoke">
+  <a href="../research/index.html" class="nav-back">← Research</a>
+  <div class="nav-right-spoke">
+    <ul class="nav-links" style="list-style:none;display:flex;gap:22px">
+      <li><a href="../research/index.html" style="font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-decoration:none;transition:color .2s">Research</a></li>
+      <li><a href="../publications/index.html" style="font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-decoration:none;transition:color .2s">Publications</a></li>
+      <li><a href="../models/index.html" style="font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-decoration:none;transition:color .2s">Models</a></li>
+      <li><a href="../index.html#about" style="font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-decoration:none;transition:color .2s">About</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="spoke-page">
+  <header class="art-hd">
+    <div class="art-eye">Research · Geoeconomic SDE Framework · Case 02</div>
+    <h1 class="art-title">USD/TRY Under Sanctions Shock — Time-Varying Jump Intensity and Geopolitical Tension</h1>
+    <div class="art-meta">
+      <span>Status: complete</span>
+      <span>Data: USD/TRY · 5,459 daily obs · 2000–2026</span>
+      <span>Language: Python 3.10</span>
+      <span>June 2025</span>
+    </div>
+    <p class="art-lede">The Turkish lira does not drift smoothly — it depreciates persistently, then breaks sharply when geopolitical tension escalates. Case 01 treated jump intensity as a fixed constant. That is wrong for a currency where sanctions announcements, central bank firings, and OFAC designations cluster in identifiable windows. This case makes jump intensity time-varying, driven by an external geopolitical signal, and asks a structurally different question: how does the tail of the USD/TRY distribution change between calm and tension regimes?</p>
+  </header>
+
+  <article class="art-body">
+    <h2>Why constant jump intensity fails here</h2>
+    <p>Case 01's OU drift was the economically honest choice for Brent — there is a structural restoring force. That same logic, applied here, leads to a different conclusion. USD/TRY has been on a one-way structural depreciation since 2018, driven by chronic inflation differentials (Turkish CPI persistently 40–85% above US CPI), repeated unorthodox monetary policy episodes, and persistent current account deficits. There is no fixed long-run level for TRY to revert toward. Fitting OU to this series would produce a historically distorted equilibrium that pulls simulations in the wrong direction. The correct drift is constant GBM — encoding the structural trend, not a reversion.</p>
+    <p>The more important departure from Case 01 is in the jump process. Three documented escalation windows produced measurable clustering of large TRY moves: the 2018 Brunson crisis (OFAC sanctions and tariff doubling; TRY lost 40% in weeks), the 2021 central bank shock (Erdogan fired the governor who raised rates; TRY fell 15% in a single session), and post-election uncertainty in 2023. A constant \(\lambda\) treats 2016–2017 identically to 2018 — clearly wrong. The model must allow jump intensity to switch between a baseline calm level and an elevated tension level.</p>
+
+    <h2>Building the SDE term by term</h2>
+    <p>The state variable is \(X(t) = \log(\text{USD/TRY})\). An increase means lira depreciation; the starting value is \(X_0 = \log(38)\).</p>
+    <p><strong>Drift.</strong> No long-run mean exists for TRY — OU is rejected on economic grounds. Constant GBM drift encodes the structural depreciation trend: \(\mu(X,t) = \mu\), estimated as the mean annualised log-return from the clean (jump-removed) series.</p>
+    <p><strong>Diffusion.</strong> Continuous FX noise from portfolio flows, bid-ask dynamics, and routine trading. Constant \(\sigma\) is appropriate; extreme volatility is captured by the jump term.</p>
+    <p><strong>Jump.</strong> Sanctions and political shocks arrive as a Poisson process with time-varying intensity \(\lambda(t)\) driven by geopolitical signal \(s(t) \in \{0,1\}\):
+    \[\lambda(t) = \lambda_0 + (\lambda_1 - \lambda_0)\cdot s(t)\]
+    where \(\lambda_0\) is the calm-period intensity and \(\lambda_1\) the elevated tension intensity. Jump sizes follow \(J \sim \mathcal{N}(\mu_j, \sigma_j^2)\) with \(\mu_j > 0\) encoding the depreciation bias — sanctions depreciate TRY; relief rallies are smaller and shorter-lived.</p>
+
+    <div class="eq-box">
+      <div class="eq-lbl">Core SDE — Assembled</div>
+      <div class="eq-content">\[ dX = \underbrace{\mu\,dt}_{\text{structural depreciation}} + \underbrace{\sigma\,dW}_{\text{continuous FX noise}} + \underbrace{J\,dq(\lambda(t))}_{\text{state-dependent jump}} \]</div>
+    </div>
+
+    <h2>Analytical tractability — why the solver is unavoidable</h2>
+    <p>The drift change from OU to constant \(\mu\) does not affect tractability — a constant drift is trivially integrable. The binding constraint is the jump term. Merton's closed-form formula requires constant \(\lambda\). The moment \(\lambda(t) = \lambda_0 + (\lambda_1-\lambda_0)\cdot s(t)\) becomes time-varying, the jump process is non-stationary. Evaluating the characteristic function requires computing \(\int_0^T \lambda(t)\,dt\), and when \(s(t)\) switches state unpredictably this integral has no closed form. The number of jumps over \([0,T]\) is no longer Poisson with a fixed parameter — it depends on the entire path of \(s(t)\). Euler-Maruyama is the only viable route.</p>
+
+    <div class="callout">
+      <p><strong>The new numerical technique in Case 02</strong> is not a different solver — it is a different solver design. In Case 01, \(\lambda\) was passed in once and never changed. Here, \(\lambda(t)\) is re-evaluated at every time step from the current signal state before drawing the Poisson increment. The signal \(s(t)\) itself evolves as a two-state Markov chain — calm to tension with probability \(p_\text{escalate}\) per day, tension to calm with probability \(p_\text{de-escalate}\) — and this state generator lives inside the model object and advances on every solver call. This design pattern carries directly into Case 04's regime-switching Markov chain.</p>
+    </div>
+
+    <h2>Calibrated parameters (MLE on 5,459 observations)</h2>
+    <div class="ptab-wrap">
+      <table class="ptab">
+        <thead><tr><th>Parameter</th><th>Symbol</th><th>Value</th><th>Interpretation</th></tr></thead>
+        <tbody>
+          <tr><td>Drift</td><td>\(\mu\)</td><td>0.1659 yr⁻¹</td><td>16.6% annualised structural depreciation trend.</td></tr>
+          <tr><td>Diffusion</td><td>\(\sigma\)</td><td>0.1601</td><td>16.0% baseline annualised volatility.</td></tr>
+          <tr><td>Calm jump intensity</td><td>\(\lambda_0\)</td><td>8.957 yr⁻¹</td><td>≈9 jump events per year in calm periods.</td></tr>
+          <tr><td>Tension jump intensity</td><td>\(\lambda_1\)</td><td>26.871 yr⁻¹</td><td>≈27 jump events per year under elevated tension. Ratio \(\lambda_1/\lambda_0 = 3\).</td></tr>
+          <tr><td>Mean jump size</td><td>\(\mu_j\)</td><td>0.009</td><td>Small positive bias — shocks are slightly depreciation-skewed.</td></tr>
+          <tr><td>Jump size std</td><td>\(\sigma_j\)</td><td>0.041</td><td>Typical jump ≈4% log-rate move per event.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>TRY's jump character is frequent small moves rather than rare catastrophic ones — 9–27 events per year at 4% each, consistent with its history of chronic politically-driven volatility. The \(\lambda_1/\lambda_0 = 3\) ratio is prior-based; separate calm/tension estimation was attempted but produced \(\lambda_1 = 0\) due to sparse coverage in Yahoo Finance tension windows.</p>
+
+    <h2>Key result — regime signal is in the tail, not the center</h2>
+    <p>Running 10,000 Monte Carlo paths from \(X_0 = \log(38)\), horizon \(T = 1\) year, under both signal states:</p>
+    <p>The constant drift \(\mu = 16.6\%\)/yr drives both median paths upward from 38 — depreciation dominates in either regime, with \(P(\text{dep}>5\%)\) exceeding 80% at the 90-day horizon. The regime difference is not in the center of the distribution but in the tail: the 95th percentile is 71.6 under tension versus 69.4 under calm — a 3.2% shift at the extreme. For a position sized in notional terms, that tail difference is material. The tension regime delivers 3× more shock events per unit time; a standard model would need to inflate overall implied vol to match this, which distorts the central distribution. The model isolates the tail shift without contaminating the median.</p>
+
+    <hr class="art-hr">
+    <div class="exit-links">
+      <a href="../docs/case02-framework.pdf" target="_blank" class="exit-btn fill">Read formal derivation (PDF) ↗</a>
+      <a href="https://github.com/aakashagarwal778/geoeconomic-sde/tree/main/cases/02_em_fx_sanctions" target="_blank" class="exit-btn out">View code on GitHub ↗</a>
+    </div>
+  </article>
+
+  <div class="related">
+    <div class="rel-lbl">Linked</div>
+    <div class="rel-links">
+      <a href="../publications/case02-usdtry.html" class="rel-link">Publication ↗</a>
+      <a href="geoeconomic-sde.html" class="rel-link">Case 01 — OPEC+ →</a>
+      <a href="ou-foundation.html" class="rel-link">OU Foundation →</a>
+      <a href="gbm-foundation.html" class="rel-link">GBM Foundation →</a>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <div class="fi">
+      <div class="fn">Aakash Agarwal<span>Quantitative Finance · 2025</span></div>
+      <div class="fl">
+        <a href="https://github.com/aakashagarwal778" target="_blank">GitHub</a>
+        <a href="https://www.linkedin.com/in/aakash11agarwal/" target="_blank">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<button class="btn-float" id="theme-float" onclick="toggleTheme()"></button>
+<script>function toggleTheme(){const h=document.documentElement;const l=h.getAttribute('data-theme')==='light';l?h.removeAttribute('data-theme'):h.setAttribute('data-theme','light');localStorage.setItem('theme',l?'dark':'light');updateThemeBtn();}
+function updateThemeBtn(){const btn=document.getElementById('theme-float');if(!btn)return;const isLight=document.documentElement.getAttribute('data-theme')==='light';btn.textContent=isLight?'◑ Dark':'☀ Light';}
+window.addEventListener('DOMContentLoaded',updateThemeBtn);</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>USD/TRY Under Sanctions Shock — Aakash Agarwal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Geist:wght@300;400;500&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<script>if(localStorage.getItem('theme')!=='dark')document.documentElement.setAttribute('data-theme','light')</script>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body>
+<nav class="nav-spoke">
+  <a href="../publications/index.html" class="nav-back">← Publications</a>
+  <div class="nav-right-spoke">
+    <ul class="nav-links" style="list-style:none;display:flex;gap:22px">
+      <li><a href="../research/index.html" style="font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-decoration:none;transition:color .2s">Research</a></li>
+      <li><a href="../publications/index.html" style="font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-decoration:none;transition:color .2s">Publications</a></li>
+      <li><a href="../models/index.html" style="font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-decoration:none;transition:color .2s">Models</a></li>
+      <li><a href="../index.html#about" style="font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-decoration:none;transition:color .2s">About</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="spoke-page">
+  <header class="art-hd">
+    <div class="art-eye">Publication · Case Study · Geoeconomic SDE Project · Case 02</div>
+    <h1 class="art-title">USD/TRY Under Sanctions Shock: Time-Varying Jump Intensity and Geopolitical Tension Signal</h1>
+    <div class="art-meta">
+      <span>Geoeconomic SDE Series · Case 02</span>
+      <span>LaTeX PDF · Calibration data</span>
+      <span>Data: USD/TRY · 5,459 obs · 2000–2026</span>
+      <span>June 2025</span>
+    </div>
+    <div class="exit-links" style="padding-top:0;margin-bottom:32px">
+      <a href="../docs/case02-framework.pdf" target="_blank" class="exit-btn fill">Download PDF ↗</a>
+      <a href="https://github.com/aakashagarwal778/geoeconomic-sde/tree/main/cases/02_em_fx_sanctions" target="_blank" class="exit-btn out">View Python code ↗</a>
+    </div>
+  </header>
+
+  <div class="art-body">
+    <div class="pub-snap-lbl">Snapshot</div>
+    <p style="font-size:15px;color:var(--dim);line-height:1.88;font-weight:300;margin-bottom:20px">USD/TRY does not drift smoothly — it depreciates persistently, then breaks sharply around identifiable geopolitical events. The clustering of large moves around sanctions announcements, central bank governor firings, and OFAC designations cannot be captured by a constant jump intensity. This document derives a jump-diffusion SDE with time-varying \(\lambda(t)\) driven by a geopolitical tension signal, calibrates it on 5,459 daily observations, and produces regime-conditional probability distributions at the 1-year horizon.</p>
+
+    <div class="pub-result">
+      <div class="pub-rl">Key result — 1-year horizon from USD/TRY = 38</div>
+      <div class="pub-rv">95th pct: 69.4 (calm) vs 71.6 (tension)</div>
+      <div class="pub-rs">Regime signal is in the tail, not the center — tension shifts extreme outcomes without moving the median materially</div>
+    </div>
+
+    <div class="pub-result">
+      <div class="pub-rl">Core SDE</div>
+      <div class="pub-rv">\(dX = \mu\,dt + \sigma\,dW + J\,dq(\lambda(t))\)</div>
+      <div class="pub-rs">\(\lambda(t) = \lambda_0 + (\lambda_1-\lambda_0)\cdot s(t)\) — time-varying intensity breaks Merton tractability → Euler-Maruyama required</div>
+    </div>
+
+    <div class="pub-chapters">
+      <div class="pub-ch"><div class="pub-ch-n">§1</div><div class="pub-ch-t">Observation and motivation — jump clustering around geopolitical events</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§2</div><div class="pub-ch-t">Economic hypothesis — structural depreciation trend; OU drift rejected on economic grounds</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§3</div><div class="pub-ch-t">SDE derivation — GBM drift, constant diffusion, state-dependent Poisson jump term by term</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§4</div><div class="pub-ch-t">Analytical tractability check — why time-varying \(\lambda(t)\) breaks Merton's formula</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§5</div><div class="pub-ch-t">Euler-Maruyama with signal generator — new technique vs Case 01</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§6</div><div class="pub-ch-t">MLE calibration on 5,459 daily observations — jump filtering and parameter table</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§7</div><div class="pub-ch-t">Simulation output — 10,000 Monte Carlo paths, calm vs tension regime fan charts</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§8</div><div class="pub-ch-t">Results and inference — scenario probability table and tradeable interpretation</div></div>
+      <div class="pub-ch"><div class="pub-ch-n">§9</div><div class="pub-ch-t">Learning and edge — design pattern carried into Case 04; drift honesty vs standard options pricing</div></div>
+    </div>
+  </div>
+
+  <div class="related">
+    <div class="rel-lbl">Linked</div>
+    <div class="rel-links">
+      <a href="../research/case02-usdtry.html" class="rel-link">Research article →</a>
+      <a href="../publications/case01-brent.html" class="rel-link">Case 01 — OPEC+ ↗</a>
+      <a href="../research/gbm-foundation.html" class="rel-link">GBM Foundation →</a>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <div class="fi">
+      <div class="fn">Aakash Agarwal<span>Quantitative Finance · 2025</span></div>
+      <div class="fl"><a href="https://github.com/aakashagarwal778" target="_blank">GitHub</a><a href="https://www.linkedin.com/in/aakash11agarwal/" target="_blank">LinkedIn</a></div>
+    </div>
+  </footer>
+</div>
+
+<button class="btn-float" id="theme-float" onclick="toggleTheme()"></button>
+<script>function toggleTheme(){const h=document.documentElement;const l=h.getAttribute('data-theme')==='light';l?h.removeAttribute('data-theme'):h.setAttribute('data-theme','light');localStorage.setItem('theme',l?'dark':'light');updateThemeBtn();}
+function updateThemeBtn(){const btn=document.getElementById('theme-float');if(!btn)return;const isLight=document.documentElement.getAttribute('data-theme')==='light';btn.textContent=isLight?'◑ Dark':'☀ Light';}
+window.addEventListener('DOMContentLoaded',updateThemeBtn);</script>
+</body>
+</html>
